@@ -4,13 +4,11 @@
 
   vars:
     STATE_RES_NAME: ami_info
-    VPC_CIDR_BLOCK: "${VPC_CIDR_BLOCK}"
-    VPC_NAME: "${VPC_NAME}"
   tasks:
 
-    - name: run cmd
-      shell: |
-        shipctl post_resource_state "{{ STATE_RES_NAME }}" versionName "build-${BUILD_NUMBER}"
+#    - name: run cmd
+#      shell: |
+#        shipctl post_resource_state "{{ STATE_RES_NAME }}" versionName "build-${BUILD_NUMBER}"
 
     - name: Create VPC {{ VPC_NAME }}
       ec2_vpc_net:
@@ -20,7 +18,7 @@
           module: "{{ VPC_NAME }}"
       register: vpc
 
-    - name: run cmd
-      shell: |
-        shipctl post_resource_state "{{ STATE_RES_NAME }}" versionName "build-${BUILD_NUMBER}"
-        shipctl put_resource_state "{{ STATE_RES_NAME }}" VPC_ID "{{ vpc.vpc.id }}"
+#    - name: run cmd
+#      shell: |
+#        shipctl post_resource_state "{{ STATE_RES_NAME }}" versionName "build-${BUILD_NUMBER}"
+#        shipctl put_resource_state "{{ STATE_RES_NAME }}" VPC_ID "{{ vpc.vpc.id }}"
