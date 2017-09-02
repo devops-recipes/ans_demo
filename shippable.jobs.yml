@@ -28,7 +28,9 @@ jobs:
     type: runSh
     steps:
       - IN: ami_conf
+        switch: off
       - IN: ami_info
+        switch: off
       - IN: aws_creds
         switch: off
       - IN: ans_sec_ops
