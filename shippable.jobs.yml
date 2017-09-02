@@ -134,6 +134,7 @@ jobs:
   - name: prov_test_ecs
     type: runSh
     steps:
+      - IN: prov_test_vpc
       - IN: test_conf
       - IN: aws_region
       - IN: aws_creds
