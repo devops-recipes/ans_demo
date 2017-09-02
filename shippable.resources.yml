@@ -33,12 +33,12 @@ resources:
     type: params
     version:
       params:
+        STATE_RES_NAME: "ami_info"
         VPC_NAME: "ami_vpc"
         VPC_CIDR_BLOCK: "200.0.0.0/16"
         VPC_SUBNET_NAME: "ami_vpc_subnet_pub"
         VPC_SUBNET_CIDR_BLOCK: "200.0.0.0/24"
         BASE_EC2_AMI: "ami-841f46ff"
-        STATE_RES_NAME: "ami_info"
 
 # Output of AMI Provisioning
   - name: ami_info
@@ -99,6 +99,7 @@ resources:
     type: params
     version:
       params:
+        STATE_RES_NAME: "test_info"
         VPC_NAME: "test_vpc"
         VPC_CIDR_BLOCK: "210.0.0.0/16"
         VPC_SUBNET_NAME: "test_vpc_subnet_pub"
@@ -107,7 +108,6 @@ resources:
         INST_COUNT: 2
         INST_TAG: "test_ecs_inst"
         INST_TYPE: "t2.micro"
-        STATE_RES_NAME: "test_info"
 
 # Output of Test Provisioning
   - name: test_info
