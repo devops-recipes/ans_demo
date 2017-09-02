@@ -1,0 +1,787 @@
+jobs:
+
+#---------------------------------------------------------------#
+#----------------- AMI Setup Using ANsible  --------------------#
+#---------------------------------------------------------------#
+
+# PROV AMI VPC with Ansible
+  - name: prov_ami_vpc
+    type: runSh
+    steps:
+      - IN: ami_conf
+      - IN: aws_creds
+        switch: off
+      - IN: ans_sec_ops
+        switch: off
+      - TASK:
+        - script: |
+            export AWS_ACCESS_KEY_ID=$(shipctl get_integration_resource_field aws_creds aws_access_key_id)
+            export AWS_SECRET_ACCESS_KEY=$(shipctl get_integration_resource_field aws_creds aws_secret_access_key)
+            cd $(shipctl get_resource_state ans_sec_ops)
+            ansible-playbook -v an_vpc_prov.yml
+      -OUT: ami_info
+
+## PROV AMI VPC Subnet with Ansible
+#  - name: prov_ami_vpc_subnet
+#    type: runSh
+#    steps:
+#      - IN: aws_region
+#      - IN: ami_state_res_name
+#        switch: off
+#      - IN: ami_infra_state
+#      - IN: prov_ami_vpc
+#      - IN: ami_vpc_subnet_conf
+#      - IN: aws_creds
+#        switch: off
+#      - IN: ans_sec_ops
+#        switch: off
+#      - TASK:
+#        - script: |
+#            export AWS_ACCESS_KEY_ID=$(shipctl get_integration_resource_field aws_creds aws_access_key_id)
+#            export AWS_SECRET_ACCESS_KEY=$(shipctl get_integration_resource_field aws_creds aws_secret_access_key)
+#            cd $(shipctl get_resource_state ans_sec_ops)
+#            pushd $(shipctl get_resource_meta ami_infra_state)
+#            export VPC_ID=$(cat version.json | jq -r '.'version.propertyBag.VPC_ID)
+#            popd
+#            shipctl replace an_vpc_subnet_prov.yml
+#            ansible-playbook -v an_vpc_subnet_prov.yml
+#      - OUT: ami_infra_state
+#
+## PROV AMI VPC IGW with Ansible
+#  - name: prov_ami_vpc_igw
+#    type: runSh
+#    steps:
+#      - IN: aws_region
+#      - IN: ami_state_res_name
+#        switch: off
+#      - IN: ami_infra_state
+#      - IN: prov_ami_vpc_subnet
+#      - IN: aws_creds
+#        switch: off
+#      - IN: ans_sec_ops
+#        switch: off
+#      - TASK:
+#        - script: |
+#            export AWS_ACCESS_KEY_ID=$(shipctl get_integration_resource_field aws_creds aws_access_key_id)
+#            export AWS_SECRET_ACCESS_KEY=$(shipctl get_integration_resource_field aws_creds aws_secret_access_key)
+#            cd $(shipctl get_resource_state ans_sec_ops)
+#            pushd $(shipctl get_resource_meta ami_infra_state)
+#            export VPC_ID=$(cat version.json | jq -r '.'version.propertyBag.VPC_ID)
+#            popd
+#            shipctl replace an_vpc_igw_prov.yml
+#            ansible-playbook -v an_vpc_igw_prov.yml
+#      - OUT: ami_infra_state
+#
+## PROV AMI VPC Public RT with Ansible
+#  - name: prov_ami_vpc_rt
+#    type: runSh
+#    steps:
+#      - IN: aws_region
+#      - IN: ami_state_res_name
+#        switch: off
+#      - IN: ami_infra_state
+#      - IN: prov_ami_vpc_igw
+#      - IN: aws_creds
+#        switch: off
+#      - IN: ans_sec_ops
+#        switch: off
+#      - TASK:
+#        - script: |
+#            export AWS_ACCESS_KEY_ID=$(shipctl get_integration_resource_field aws_creds aws_access_key_id)
+#            export AWS_SECRET_ACCESS_KEY=$(shipctl get_integration_resource_field aws_creds aws_secret_access_key)
+#            cd $(shipctl get_resource_state ans_sec_ops)
+#            pushd $(shipctl get_resource_meta ami_infra_state)
+#            export VPC_ID=$(cat version.json | jq -r '.'version.propertyBag.VPC_ID)
+#            export VPC_SUBNET_ID=$(cat version.json | jq -r '.'version.propertyBag.VPC_SUBNET_ID)
+#            export VPC_IGW_ID=$(cat version.json | jq -r '.'version.propertyBag.VPC_IGW_ID)
+#            popd
+#            shipctl replace an_vpc_rt_prov.yml
+#            ansible-playbook -v an_vpc_rt_prov.yml
+#      - OUT: ami_infra_state
+#
+## PROV AMI VPC Public RT with Ansible
+#  - name: prov_ami_vpc_sg_group
+#    type: runSh
+#    steps:
+#      - IN: aws_region
+#      - IN: ami_state_res_name
+#        switch: off
+#      - IN: ami_infra_state
+#      - IN: prov_ami_vpc_rt
+#      - IN: aws_creds
+#        switch: off
+#      - IN: ans_sec_ops
+#        switch: off
+#      - TASK:
+#        - script: |
+#            export AWS_ACCESS_KEY_ID=$(shipctl get_integration_resource_field aws_creds aws_access_key_id)
+#            export AWS_SECRET_ACCESS_KEY=$(shipctl get_integration_resource_field aws_creds aws_secret_access_key)
+#            cd $(shipctl get_resource_state ans_sec_ops)
+#            pushd $(shipctl get_resource_meta ami_infra_state)
+#            export VPC_ID=$(cat version.json | jq -r '.'version.propertyBag.VPC_ID)
+#            export VPC_SUBNET_CIDR_BLOCK=$(cat version.json | jq -r '.'version.propertyBag.VPC_SUBNET_CIDR_BLOCK)
+#            popd
+#            shipctl replace an_vpc_sg_group_prov.yml
+#            ansible-playbook -v an_vpc_sg_group_prov.yml
+#      - OUT: ami_infra_state
+#
+## DEPROV AMI with Ansible
+#  - name: deprov_ami_vpc
+#    type: runSh
+#    steps:
+#      - IN: aws_region
+#      - IN: ami_state_res_name
+#        switch: off
+#      - IN: ami_infra_state
+#      - IN: ami_vpc_subnet_conf
+#        switch: off
+#      - IN: ami_vpc_conf
+#        switch: off
+#      - IN: aws_creds
+#        switch: off
+#      - IN: ans_sec_ops
+#        switch: off
+#      - TASK:
+#        - script: |
+#            export AWS_ACCESS_KEY_ID=$(shipctl get_integration_resource_field aws_creds aws_access_key_id)
+#            export AWS_SECRET_ACCESS_KEY=$(shipctl get_integration_resource_field aws_creds aws_secret_access_key)
+#            cd $(shipctl get_resource_state ans_sec_ops)
+#            pushd $(shipctl get_resource_meta ami_infra_state)
+#            export VPC_ID=$(cat version.json | jq -r '.'version.propertyBag.VPC_ID)
+#            export VPC_SUBNET_ID=$(cat version.json | jq -r '.'version.propertyBag.VPC_SUBNET_ID)
+#            export VPC_IGW_ID=$(cat version.json | jq -r '.'version.propertyBag.VPC_IGW_ID)
+#            popd
+#            shipctl replace an_vpc_deprov.yml
+#            ansible-playbook -v an_vpc_deprov.yml
+#      - OUT: ami_infra_state
+#
+## CREATE AWS AMI used to deploy ECS VMs with PACKER
+#  - name: build_ecs_ami
+#    type: runSh
+#    steps:
+#      - IN: prov_ami_vpc_sg_group
+#      - IN: aws_region
+#      - IN: ami_create_conf
+#      - IN: ami_infra_state
+#      - IN: aws_creds
+#        switch: off
+#      - IN: ans_sec_ops
+#        switch: off
+#      - TASK:
+#        - script: . IN/ans_sec_ops/gitRepo/pk_basePack.sh
+#      - OUT: ami_sec_approved
+#
+##---------------------------------------------------------------#
+##------------------------- INST PROF Setup -----------------------#
+##---------------------------------------------------------------#
+#
+## SETUP Instance Profile with TERRAFORM
+#  - name: setup_inst_prof
+#    type: runSh
+#    steps:
+#      - IN: aws_region
+#      - IN: inst_tf_state
+#      - IN: aws_creds
+#        switch: off
+#      - IN: ans_sec_ops
+#        switch: off
+#      - TASK:
+#        - script: . /build/IN/ans_sec_ops/gitRepo/tf_createInstProf.sh create
+#      - OUT: inst_tf_state
+#      - OUT: inst_prof_name
+#    on_success:
+#      - script: echo "SUCCESS"
+#    on_failure:
+#      - script: echo "FAILURE"
+#    always:
+#      - script: . /build/IN/ans_sec_ops/gitRepo/tf_archiveState.sh inst_tf_state
+#
+#
+##---------------------------------------------------------------#
+##------------------- BUILD/CI with SHIPPABLE CI ----------------#
+##---------------------------------------------------------------#
+#
+#### PACKAGE sample Node.js into docker container
+#  - name: ci-push-docker-hub_runCI
+#    type: runCI
+#    steps:
+#      - OUT: demo_doc_img
+#
+## DEFINE app micro service
+#  - name: create_app_man
+#    type: manifest
+#    steps:
+#      - IN: demo_doc_img
+#      - IN: doc_img_opts
+#
+##---------------------------------------------------------------#
+##-------------- TEST Infra Prov Using ANsible  -----------------#
+##---------------------------------------------------------------#
+#
+## PROV Test VPC with Ansible
+#  - name: prov_test_vpc
+#    type: runSh
+#    steps:
+#      - IN: create_app_man
+#      - IN: aws_region
+#      - IN: test_state_res_name
+#        switch: off
+#      - IN: aws_creds
+#        switch: off
+#      - IN: ans_sec_ops
+#        switch: off
+#      - IN: test_vpc_conf
+#      - TASK:
+#        - script: |
+#            export AWS_ACCESS_KEY_ID=$(shipctl get_integration_resource_field aws_creds aws_access_key_id)
+#            export AWS_SECRET_ACCESS_KEY=$(shipctl get_integration_resource_field aws_creds aws_secret_access_key)
+#            cd $(shipctl get_resource_state ans_sec_ops)
+#            shipctl replace an_vpc_prov.yml
+#            ansible-playbook -v an_vpc_prov.yml
+#      - OUT: test_infra_state
+#
+## PROV Test VPC Subnet with Ansible
+#  - name: prov_test_vpc_subnet
+#    type: runSh
+#    steps:
+#      - IN: aws_region
+#      - IN: test_state_res_name
+#        switch: off
+#      - IN: test_infra_state
+#      - IN: prov_test_vpc
+#      - IN: test_vpc_subnet_conf
+#      - IN: aws_creds
+#        switch: off
+#      - IN: ans_sec_ops
+#        switch: off
+#      - TASK:
+#        - script: |
+#            export AWS_ACCESS_KEY_ID=$(shipctl get_integration_resource_field aws_creds aws_access_key_id)
+#            export AWS_SECRET_ACCESS_KEY=$(shipctl get_integration_resource_field aws_creds aws_secret_access_key)
+#            cd $(shipctl get_resource_state ans_sec_ops)
+#            pushd $(shipctl get_resource_meta test_infra_state)
+#            export VPC_ID=$(cat version.json | jq -r '.'version.propertyBag.VPC_ID)
+#            popd
+#            shipctl replace an_vpc_subnet_prov.yml
+#            ansible-playbook -v an_vpc_subnet_prov.yml
+#      - OUT: test_infra_state
+#
+## PROV Test VPC IGW with Ansible
+#  - name: prov_test_vpc_igw
+#    type: runSh
+#    steps:
+#      - IN: aws_region
+#      - IN: test_state_res_name
+#        switch: off
+#      - IN: test_infra_state
+#      - IN: prov_test_vpc_subnet
+#      - IN: aws_creds
+#        switch: off
+#      - IN: ans_sec_ops
+#        switch: off
+#      - TASK:
+#        - script: |
+#            export AWS_ACCESS_KEY_ID=$(shipctl get_integration_resource_field aws_creds aws_access_key_id)
+#            export AWS_SECRET_ACCESS_KEY=$(shipctl get_integration_resource_field aws_creds aws_secret_access_key)
+#            cd $(shipctl get_resource_state ans_sec_ops)
+#            pushd $(shipctl get_resource_meta test_infra_state)
+#            export VPC_ID=$(cat version.json | jq -r '.'version.propertyBag.VPC_ID)
+#            popd
+#            shipctl replace an_vpc_igw_prov.yml
+#            ansible-playbook -v an_vpc_igw_prov.yml
+#      - OUT: test_infra_state
+#
+## PROV Test VPC Public RT with Ansible
+#  - name: prov_test_vpc_rt
+#    type: runSh
+#    steps:
+#      - IN: aws_region
+#      - IN: test_state_res_name
+#        switch: off
+#      - IN: test_infra_state
+#      - IN: prov_test_vpc_igw
+#      - IN: aws_creds
+#        switch: off
+#      - IN: ans_sec_ops
+#        switch: off
+#      - TASK:
+#        - script: |
+#            export AWS_ACCESS_KEY_ID=$(shipctl get_integration_resource_field aws_creds aws_access_key_id)
+#            export AWS_SECRET_ACCESS_KEY=$(shipctl get_integration_resource_field aws_creds aws_secret_access_key)
+#            cd $(shipctl get_resource_state ans_sec_ops)
+#            pushd $(shipctl get_resource_meta test_infra_state)
+#            export VPC_ID=$(cat version.json | jq -r '.'version.propertyBag.VPC_ID)
+#            export VPC_SUBNET_ID=$(cat version.json | jq -r '.'version.propertyBag.VPC_SUBNET_ID)
+#            export VPC_IGW_ID=$(cat version.json | jq -r '.'version.propertyBag.VPC_IGW_ID)
+#            popd
+#            shipctl replace an_vpc_rt_prov.yml
+#            ansible-playbook -v an_vpc_rt_prov.yml
+#      - OUT: test_infra_state
+#
+## PROV Test VPC Public RT with Ansible
+#  - name: prov_test_vpc_sg_group
+#    type: runSh
+#    steps:
+#      - IN: aws_region
+#      - IN: test_state_res_name
+#        switch: off
+#      - IN: test_infra_state
+#      - IN: prov_test_vpc_rt
+#      - IN: aws_creds
+#        switch: off
+#      - IN: ans_sec_ops
+#        switch: off
+#      - TASK:
+#        - script: |
+#            export AWS_ACCESS_KEY_ID=$(shipctl get_integration_resource_field aws_creds aws_access_key_id)
+#            export AWS_SECRET_ACCESS_KEY=$(shipctl get_integration_resource_field aws_creds aws_secret_access_key)
+#            cd $(shipctl get_resource_state ans_sec_ops)
+#            pushd $(shipctl get_resource_meta test_infra_state)
+#            export VPC_ID=$(cat version.json | jq -r '.'version.propertyBag.VPC_ID)
+#            export VPC_SUBNET_CIDR_BLOCK=$(cat version.json | jq -r '.'version.propertyBag.VPC_SUBNET_CIDR_BLOCK)
+#            popd
+#            shipctl replace an_vpc_sg_group_prov.yml
+#            ansible-playbook -v an_vpc_sg_group_prov.yml
+#      - OUT: test_infra_state
+#
+## PROV Test ECS Cluster with Ansible
+#  - name: prov_test_ecs
+#    type: runSh
+#    steps:
+#      - IN: test_cluster_conf
+#      - IN: aws_region
+#      - IN: test_state_res_name
+#        switch: off
+#      - IN: prov_test_vpc
+#      - IN: aws_creds
+#        switch: off
+#      - IN: ans_sec_ops
+#        switch: off
+#      - TASK:
+#        - script: |
+#            sudo pip install boto3
+#            export AWS_ACCESS_KEY_ID=$(shipctl get_integration_resource_field aws_creds aws_access_key_id)
+#            export AWS_SECRET_ACCESS_KEY=$(shipctl get_integration_resource_field aws_creds aws_secret_access_key)
+#            cd $(shipctl get_resource_state ans_sec_ops)
+#            shipctl replace an_ecs_prov.yml
+#            ansible-playbook -v an_ecs_prov.yml
+#      - OUT: test_infra_state
+#      - OUT: test_env_ecs
+#
+## PROV Test EC2 Instances with Ansible
+#  - name: prov_test_ec2
+#    type: runSh
+#    steps:
+#      - IN: test_ec2_conf
+#      - IN: test_cluster_conf
+#        switch: off
+#      - IN: inst_prof_name
+#        switch: off
+#      - IN: aws_region
+#      - IN: test_infra_state
+#      - IN: test_state_res_name
+#        switch: off
+#      - IN: prov_test_ecs
+#        switch: off
+#      - IN: prov_test_vpc_sg_group
+#      - IN: aws_creds
+#        switch: off
+#      - IN: ans_sec_ops
+#        switch: off
+#      - TASK:
+#        - script: |
+#            export AWS_ACCESS_KEY_ID=$(shipctl get_integration_resource_field aws_creds aws_access_key_id)
+#            export AWS_SECRET_ACCESS_KEY=$(shipctl get_integration_resource_field aws_creds aws_secret_access_key)
+#            cd $(shipctl get_resource_state ans_sec_ops)
+#            pushd $(shipctl get_resource_meta test_infra_state)
+#            export VPC_SUBNET_ID=$(cat version.json | jq -r '.'version.propertyBag.VPC_SUBNET_ID)
+#            popd
+#            shipctl replace an_ec2_prov.yml
+#            ansible-playbook -v an_ec2_prov.yml
+#      - OUT: test_infra_state
+#
+###---------------------------------------------------------------#
+###-------------------- App Release Automation -------------------#
+###---------------------------------------------------------------#
+#
+## DEPLOY to TEST environment
+#  - name: deploy_app_test
+#    type: deploy
+#    steps:
+#      - IN: create_app_man
+#        switch: off
+#      - IN: prov_test_ec2
+#      - IN: test_env_ecs
+#        switch: off
+#      - TASK: managed
+#
+## RUN System Integration Testing
+#  - name: sit
+#    type: runSh
+#    steps:
+#      - IN: sit_repo
+#      - IN: deploy_app_test
+#      - IN: sit_params
+#      - TASK:
+#        - script: IN/sit_repo/gitRepo/test.sh sit_params
+#    on_success:
+#      - script: touch /build/state/success.txt
+#    on_failure:
+#      - script: touch /build/state/failure.txt
+#
+## CREATE a production ready release
+#  - name: release_app
+#    type: release
+#    steps:
+#      - IN: seed_app_ver
+#      - IN: sit
+#      - IN: deploy_app_test
+#        switch: off
+#      - TASK: managed
+#        bump: patch
+#
+##---------------------------------------------------------------#
+##----------------------- Deprov Test Infra----------------------#
+##---------------------------------------------------------------#
+#
+## DEPROV TEST Infra with Ansible
+#  - name: deprov_test_infra
+#    type: runSh
+#    steps:
+#      - IN: release_app
+#        switch: off
+#      - IN: aws_region
+#      - IN: test_state_res_name
+#        switch: off
+#      - IN: test_infra_state
+#      - IN: test_ec2_conf
+#        switch: off
+#      - IN: test_cluster_conf
+#        switch: off
+#      - IN: aws_creds
+#        switch: off
+#      - IN: ans_sec_ops
+#        switch: off
+#      - TASK:
+#        - script: |
+#            sudo pip install boto3
+#            export AWS_ACCESS_KEY_ID=$(shipctl get_integration_resource_field aws_creds aws_access_key_id)
+#            export AWS_SECRET_ACCESS_KEY=$(shipctl get_integration_resource_field aws_creds aws_secret_access_key)
+#            cd $(shipctl get_resource_state ans_sec_ops)
+#            pushd $(shipctl get_resource_meta test_infra_state)
+#            export VPC_SUBNET_ID=$(cat version.json | jq -r '.'version.propertyBag.VPC_SUBNET_ID)
+#            popd
+#            shipctl replace an_infra_deprov.yml
+#            ansible-playbook -v an_infra_deprov.yml
+#      - OUT: test_infra_state
+#
+## DEPROV TEST VPC with Ansible
+#  - name: deprov_test_vpc
+#    type: runSh
+#    steps:
+#      - IN: deprov_test_infra
+#      - IN: aws_region
+#      - IN: test_state_res_name
+#        switch: off
+#      - IN: test_infra_state
+#      - IN: test_vpc_subnet_conf
+#        switch: off
+#      - IN: test_vpc_conf
+#        switch: off
+#      - IN: aws_creds
+#        switch: off
+#      - IN: ans_sec_ops
+#        switch: off
+#      - TASK:
+#        - script: |
+#            export AWS_ACCESS_KEY_ID=$(shipctl get_integration_resource_field aws_creds aws_access_key_id)
+#            export AWS_SECRET_ACCESS_KEY=$(shipctl get_integration_resource_field aws_creds aws_secret_access_key)
+#            cd $(shipctl get_resource_state ans_sec_ops)
+#            pushd $(shipctl get_resource_meta test_infra_state)
+#            export VPC_ID=$(cat version.json | jq -r '.'version.propertyBag.VPC_ID)
+#            export VPC_SUBNET_ID=$(cat version.json | jq -r '.'version.propertyBag.VPC_SUBNET_ID)
+#            export VPC_IGW_ID=$(cat version.json | jq -r '.'version.propertyBag.VPC_IGW_ID)
+#            popd
+#            shipctl replace an_vpc_deprov.yml
+#            ansible-playbook -v an_vpc_deprov.yml
+#      - OUT: test_infra_state
+#
+##---------------------------------------------------------------#
+##-------------- Prod Infra Prov Using ANsible  -----------------#
+##---------------------------------------------------------------#
+#
+## TRIGGER PROD deployment
+#  - name: trig_prod_deploy
+#    type: runSh
+#    steps:
+#      - IN: ans_sec_ops
+#        switch: off
+#      - IN: release_app
+#        switch: off
+#      - OUT: prod_app_ver
+#      - TASK:
+#        - script: IN/ans_sec_ops/gitRepo/setVer.sh release_app prod_app_ver
+#
+## PROV Prod VPC with Ansible
+#  - name: prov_prod_vpc
+#    type: runSh
+#    steps:
+##      - IN: trig_prod_deploy
+#      - IN: aws_region
+#      - IN: prod_state_res_name
+#        switch: off
+#      - IN: aws_creds
+#        switch: off
+#      - IN: ans_sec_ops
+#        switch: off
+#      - IN: prod_vpc_conf
+#      - TASK:
+#        - script: |
+#            export AWS_ACCESS_KEY_ID=$(shipctl get_integration_resource_field aws_creds aws_access_key_id)
+#            export AWS_SECRET_ACCESS_KEY=$(shipctl get_integration_resource_field aws_creds aws_secret_access_key)
+#            cd $(shipctl get_resource_state ans_sec_ops)
+#            shipctl replace an_vpc_prov.yml
+#            ansible-playbook -v an_vpc_prov.yml
+#      - OUT: prod_infra_state
+#
+## PROV Prod VPC Subnet with Ansible
+#  - name: prov_prod_vpc_subnet
+#    type: runSh
+#    steps:
+#      - IN: aws_region
+#      - IN: prod_state_res_name
+#        switch: off
+#      - IN: prod_infra_state
+#      - IN: prov_prod_vpc
+#      - IN: prod_vpc_subnet_conf
+#      - IN: aws_creds
+#        switch: off
+#      - IN: ans_sec_ops
+#        switch: off
+#      - TASK:
+#        - script: |
+#            export AWS_ACCESS_KEY_ID=$(shipctl get_integration_resource_field aws_creds aws_access_key_id)
+#            export AWS_SECRET_ACCESS_KEY=$(shipctl get_integration_resource_field aws_creds aws_secret_access_key)
+#            cd $(shipctl get_resource_state ans_sec_ops)
+#            pushd $(shipctl get_resource_meta prod_infra_state)
+#            export VPC_ID=$(cat version.json | jq -r '.'version.propertyBag.VPC_ID)
+#            popd
+#            shipctl replace an_vpc_subnet_prov.yml
+#            ansible-playbook -v an_vpc_subnet_prov.yml
+#      - OUT: prod_infra_state
+#
+## PROV Prod VPC IGW with Ansible
+#  - name: prov_prod_vpc_igw
+#    type: runSh
+#    steps:
+#      - IN: aws_region
+#      - IN: prod_state_res_name
+#        switch: off
+#      - IN: prod_infra_state
+#      - IN: prov_prod_vpc_subnet
+#      - IN: aws_creds
+#        switch: off
+#      - IN: ans_sec_ops
+#        switch: off
+#      - TASK:
+#        - script: |
+#            export AWS_ACCESS_KEY_ID=$(shipctl get_integration_resource_field aws_creds aws_access_key_id)
+#            export AWS_SECRET_ACCESS_KEY=$(shipctl get_integration_resource_field aws_creds aws_secret_access_key)
+#            cd $(shipctl get_resource_state ans_sec_ops)
+#            pushd $(shipctl get_resource_meta prod_infra_state)
+#            export VPC_ID=$(cat version.json | jq -r '.'version.propertyBag.VPC_ID)
+#            popd
+#            shipctl replace an_vpc_igw_prov.yml
+#            ansible-playbook -v an_vpc_igw_prov.yml
+#      - OUT: prod_infra_state
+#
+## PROV Prod VPC Public RT with Ansible
+#  - name: prov_prod_vpc_rt
+#    type: runSh
+#    steps:
+#      - IN: aws_region
+#      - IN: prod_state_res_name
+#        switch: off
+#      - IN: prod_infra_state
+#      - IN: prov_prod_vpc_igw
+#      - IN: aws_creds
+#        switch: off
+#      - IN: ans_sec_ops
+#        switch: off
+#      - TASK:
+#        - script: |
+#            export AWS_ACCESS_KEY_ID=$(shipctl get_integration_resource_field aws_creds aws_access_key_id)
+#            export AWS_SECRET_ACCESS_KEY=$(shipctl get_integration_resource_field aws_creds aws_secret_access_key)
+#            cd $(shipctl get_resource_state ans_sec_ops)
+#            pushd $(shipctl get_resource_meta prod_infra_state)
+#            export VPC_ID=$(cat version.json | jq -r '.'version.propertyBag.VPC_ID)
+#            export VPC_SUBNET_ID=$(cat version.json | jq -r '.'version.propertyBag.VPC_SUBNET_ID)
+#            export VPC_IGW_ID=$(cat version.json | jq -r '.'version.propertyBag.VPC_IGW_ID)
+#            popd
+#            shipctl replace an_vpc_rt_prov.yml
+#            ansible-playbook -v an_vpc_rt_prov.yml
+#      - OUT: prod_infra_state
+#
+## PROV Prod VPC Public SG with Ansible
+#  - name: prov_prod_vpc_sg_group
+#    type: runSh
+#    steps:
+#      - IN: aws_region
+#      - IN: prod_state_res_name
+#        switch: off
+#      - IN: prod_infra_state
+#      - IN: prov_prod_vpc_rt
+#      - IN: aws_creds
+#        switch: off
+#      - IN: ans_sec_ops
+#        switch: off
+#      - TASK:
+#        - script: |
+#            export AWS_ACCESS_KEY_ID=$(shipctl get_integration_resource_field aws_creds aws_access_key_id)
+#            export AWS_SECRET_ACCESS_KEY=$(shipctl get_integration_resource_field aws_creds aws_secret_access_key)
+#            cd $(shipctl get_resource_state ans_sec_ops)
+#            pushd $(shipctl get_resource_meta prod_infra_state)
+#            export VPC_ID=$(cat version.json | jq -r '.'version.propertyBag.VPC_ID)
+#            export VPC_SUBNET_CIDR_BLOCK=$(cat version.json | jq -r '.'version.propertyBag.VPC_SUBNET_CIDR_BLOCK)
+#            popd
+#            shipctl replace an_vpc_sg_group_prov.yml
+#            ansible-playbook -v an_vpc_sg_group_prov.yml
+#      - OUT: prod_infra_state
+#
+## PROV Prod ECS Cluster with Ansible
+#  - name: prov_prod_ecs
+#    type: runSh
+#    steps:
+#      - IN: prod_cluster_conf
+#      - IN: aws_region
+#      - IN: prod_state_res_name
+#        switch: off
+#      - IN: prov_prod_vpc
+#      - IN: aws_creds
+#        switch: off
+#      - IN: ans_sec_ops
+#        switch: off
+#      - TASK:
+#        - script: |
+#            sudo pip install boto3
+#            export AWS_ACCESS_KEY_ID=$(shipctl get_integration_resource_field aws_creds aws_access_key_id)
+#            export AWS_SECRET_ACCESS_KEY=$(shipctl get_integration_resource_field aws_creds aws_secret_access_key)
+#            cd $(shipctl get_resource_state ans_sec_ops)
+#            shipctl replace an_ecs_prov.yml
+#            ansible-playbook -v an_ecs_prov.yml
+#      - OUT: prod_infra_state
+#      - OUT: prod_env_ecs
+#
+## PROV Prod EC2 Instances with Ansible
+#  - name: prov_prod_ec2
+#    type: runSh
+#    steps:
+#      - IN: prod_ec2_conf
+#      - IN: prod_cluster_conf
+#        switch: off
+#      - IN: inst_prof_name
+#        switch: off
+#      - IN: aws_region
+#      - IN: prod_infra_state
+#      - IN: prod_state_res_name
+#        switch: off
+#      - IN: prov_prod_ecs
+#        switch: off
+#      - IN: prov_prod_vpc_sg_group
+#      - IN: aws_creds
+#        switch: off
+#      - IN: ans_sec_ops
+#        switch: off
+#      - TASK:
+#        - script: |
+#            export AWS_ACCESS_KEY_ID=$(shipctl get_integration_resource_field aws_creds aws_access_key_id)
+#            export AWS_SECRET_ACCESS_KEY=$(shipctl get_integration_resource_field aws_creds aws_secret_access_key)
+#            cd $(shipctl get_resource_state ans_sec_ops)
+#            pushd $(shipctl get_resource_meta prod_infra_state)
+#            export VPC_SUBNET_ID=$(cat version.json | jq -r '.'version.propertyBag.VPC_SUBNET_ID)
+#            popd
+#            shipctl replace an_ec2_prov.yml
+#            ansible-playbook -v an_ec2_prov.yml
+#      - OUT: prod_infra_state
+#
+#
+##---------------------------------------------------------------#
+##----------------------- CD to Production ----------------------#
+##---------------------------------------------------------------#
+#
+## DEPLOY app to PROD
+#  - name: deploy_app_prod
+#    type: deploy
+#    steps:
+#      - IN: scale_app_prod
+#      - IN: trig_prod_deploy
+#      - IN: release_app
+#        switch: off
+#      - IN: prod_env_ecs
+#        switch: off
+#      - TASK: managed
+##        deployMethod: replace
+#
+##---------------------------------------------------------------#
+##----------------------- Deprov Prod Infra----------------------#
+##---------------------------------------------------------------#
+#
+## DEPROV PROD Infra with Ansible
+#  - name: deprov_prod_infra
+#    type: runSh
+#    steps:
+#      - IN: aws_region
+#      - IN: prod_state_res_name
+#        switch: off
+#      - IN: prod_infra_state
+#      - IN: prod_ec2_conf
+#        switch: off
+#      - IN: prod_cluster_conf
+#        switch: off
+#      - IN: aws_creds
+#        switch: off
+#      - IN: ans_sec_ops
+#        switch: off
+#      - TASK:
+#        - script: |
+#            sudo pip install boto3
+#            export AWS_ACCESS_KEY_ID=$(shipctl get_integration_resource_field aws_creds aws_access_key_id)
+#            export AWS_SECRET_ACCESS_KEY=$(shipctl get_integration_resource_field aws_creds aws_secret_access_key)
+#            cd $(shipctl get_resource_state ans_sec_ops)
+#            pushd $(shipctl get_resource_meta prod_infra_state)
+#            export VPC_SUBNET_ID=$(cat version.json | jq -r '.'version.propertyBag.VPC_SUBNET_ID)
+#            popd
+#            shipctl replace an_infra_deprov.yml
+#            ansible-playbook -v an_infra_deprov.yml
+#      - OUT: prod_infra_state
+#
+## DEPROV POD VPC with Ansible
+#  - name: deprov_prod_vpc
+#    type: runSh
+#    steps:
+#      - IN: deprov_prod_infra
+#      - IN: aws_region
+#      - IN: prod_state_res_name
+#        switch: off
+#      - IN: prod_infra_state
+#      - IN: prod_vpc_subnet_conf
+#        switch: off
+#      - IN: prod_vpc_conf
+#        switch: off
+#      - IN: aws_creds
+#        switch: off
+#      - IN: ans_sec_ops
+#        switch: off
+#      - TASK:
+#        - script: |
+#            export AWS_ACCESS_KEY_ID=$(shipctl get_integration_resource_field aws_creds aws_access_key_id)
+#            export AWS_SECRET_ACCESS_KEY=$(shipctl get_integration_resource_field aws_creds aws_secret_access_key)
+#            cd $(shipctl get_resource_state ans_sec_ops)
+#            pushd $(shipctl get_resource_meta prod_infra_state)
+#            export VPC_ID=$(cat version.json | jq -r '.'version.propertyBag.VPC_ID)
+#            export VPC_SUBNET_ID=$(cat version.json | jq -r '.'version.propertyBag.VPC_SUBNET_ID)
+#            export VPC_IGW_ID=$(cat version.json | jq -r '.'version.propertyBag.VPC_IGW_ID)
+#            popd
+#            shipctl replace an_vpc_deprov.yml
+#            ansible-playbook -v an_vpc_deprov.yml
+#      - OUT: prod_infra_state

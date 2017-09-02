@@ -1,0 +1,236 @@
+resources:
+
+#---------------------------------------------------------------#
+#-------------------- Common INFRA Resources -------------------#
+#---------------------------------------------------------------#
+
+# AWS credentials
+  - name: aws_creds
+    type: integration
+    integration: "demo_aws_key"
+
+# Security Ops scripts repo
+  - name: ans_sec_ops
+    type: gitRepo
+    integration: "demo_gh"
+    pointer:
+      sourceName: "avinci/ans_sec_ops"
+      branch: master
+
+##---------------------------------------------------------------#
+##----------------------- AMI VPC Resources --------------------#
+##---------------------------------------------------------------#
+
+# AMI VPC Creation Config
+  - name: ami_conf
+    type: params
+    version:
+      params:
+        AWS_REGION: "us-east-1"
+        VPC_NAME: "ami_vpc"
+        VPC_CIDR_BLOCK: "200.0.0.0/16"
+        VPC_SUBNET_NAME: "ami_vpc_subnet_pub"
+        VPC_SUBNET_CIDR_BLOCK: "200.0.0.0/24"
+        BASE_EC2_AMI: "ami-841f46ff"
+
+# Base ECS AMI ID
+  - name: ami_info
+    type: params
+    version:
+      params:
+        SEED: "initial_version"
+
+## Base ECS AMI ID
+#  - name: ami_sec_approved
+#    type: params
+#    version:
+#      params:
+#        SEED: "initial_version"
+
+###---------------------------------------------------------------#
+###----------------------- TF Resources --------------------#
+###---------------------------------------------------------------#
+## Networking TERRAFORM State
+#  - name: inst_tf_state
+#    type: state
+#
+## OUT INST PROF INFO
+#  - name: inst_prof_name
+#    type: params
+#    version:
+#      params:
+#        SEED: "initial_version"
+#
+###---------------------------------------------------------------#
+###----------------------- TEST VPC Resources --------------------#
+###---------------------------------------------------------------#
+## Test Infra state
+#  - name: test_infra_state
+#    type: state
+#
+## Test State Resource Name
+#  - name: test_state_res_name
+#    type: params
+#    version:
+#      params:
+#        STATE_RES_NAME: "test_infra_state"
+#
+## Test VPC Creation Config
+#  - name: test_vpc_conf
+#    type: params
+#    version:
+#      params:
+#        VPC_NAME: "test_vpc"
+#        VPC_CIDR_BLOCK: "210.0.0.0/16"
+#
+## Test VPC Creation Config
+#  - name: test_vpc_subnet_conf
+#    type: params
+#    version:
+#      params:
+#        VPC_SUBNET_NAME: "test_vpc_subnet_pub"
+#        VPC_SUBNET_CIDR_BLOCK: "210.0.0.0/24"
+#
+## Test Cluster  Name
+#  - name: test_cluster_conf
+#    type: params
+#    version:
+#      params:
+#        ECS_CLUSTER_NAME: "test-aws"
+#
+## Reference to ECS Test Cluster
+#  - name: test_env_ecs
+#    type: cluster
+#    integration: "demo_aws_key"
+#    pointer:
+#      sourceName : "test-aws"
+#      region: "us-east-1"
+#
+## Test Cluster  Name
+#  - name: test_ec2_conf
+#    type: params
+#    version:
+#      params:
+#        INST_COUNT: 2
+#        INST_TAG: "test_ecs_inst"
+#        INST_TYPE: "t2.micro"
+#
+#
+###---------------------------------------------------------------#
+###----------------------- PROD VPC Resources --------------------#
+###---------------------------------------------------------------#
+## Prod Infra state
+#  - name: prod_infra_state
+#    type: state
+#
+## Prod State Resource Name
+#  - name: prod_state_res_name
+#    type: params
+#    version:
+#      params:
+#        STATE_RES_NAME: "prod_infra_state"
+#
+## Prod VPC Creation Config
+#  - name: prod_vpc_conf
+#    type: params
+#    version:
+#      params:
+#        VPC_NAME: "prod_vpc"
+#        VPC_CIDR_BLOCK: "100.0.0.0/16"
+#
+## Prod VPC Creation Config
+#  - name: prod_vpc_subnet_conf
+#    type: params
+#    version:
+#      params:
+#        VPC_SUBNET_NAME: "prod_vpc_subnet_pub"
+#        VPC_SUBNET_CIDR_BLOCK: "100.0.0.0/24"
+#
+## Prod Cluster Name
+#  - name: prod_cluster_conf
+#    type: params
+#    version:
+#      params:
+#        ECS_CLUSTER_NAME: "prod-aws"
+#
+## Reference to ECS Prod Cluster
+#  - name: prod_env_ecs
+#    type: cluster
+#    integration: "demo_aws_key"
+#    pointer:
+#      sourceName : "prod-aws"
+#      region: "us-east-1"
+#
+## Test Cluster  Name
+#  - name: prod_ec2_conf
+#    type: params
+#    version:
+#      params:
+#        INST_COUNT: 3
+#        INST_TAG: "prod_ecs_inst"
+#        INST_TYPE: "t2.micro"
+#
+#
+###---------------------------------------------------------------#
+###----------------------- BUILD/CI Resources --------------------#
+###---------------------------------------------------------------#
+#
+## Docker Image packaging sample Node app
+#  - name: demo_doc_img
+#    type: image
+#    integration: "demo_dh"
+#    pointer:
+#      sourceName: "avinci/ci_push_docker_hub"
+#    seed:
+#      versionName: "latest"
+#
+## Docker Options for packaged
+#  - name: doc_img_opts
+#    type: dockerOptions
+#    version:
+##      memory: 256
+##      cpuShares: 256
+#      portMappings:
+#        - 80:80
+#
+###---------------------------------------------------------------#
+###------------- Application Release Automation Resources --------#
+###---------------------------------------------------------------#
+## REPO of SIT code
+#  - name: sit_repo
+#    type: gitRepo
+#    integration: "demo_gh"
+#    pointer:
+#      sourceName: "avinci/demoSIT"
+#      branch: master
+#
+## SIT env vars for BOX
+#  - name: sit_params
+#    type: params
+#    version:
+#      params:
+#        API_URL: "54.158.18.50:8080"
+#        API_TOKEN: "NA"
+#
+## Seed version resource
+#  - name: seed_app_ver
+#    type: version
+#    seed:
+#      versionName: "1.0.0"
+#
+## Current Prod version
+#  - name: prod_app_ver
+#    type: params
+#    version:
+#      params:
+#        RELEASE_VER_NUMBER: "1.0.0"
+#
+###---------------------------------------------------------------#
+###---------------------- CD to PROD Resources -------------------#
+###---------------------------------------------------------------#
+#
+## Number of packaged WARs to deploy to Prod
+#  - name: scale_app_prod
+#    type: replicas
+#    version:
+#      count: 1

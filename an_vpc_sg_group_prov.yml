@@ -1,0 +1,37 @@
+- hosts: localhost
+  connection: local
+  gather_facts: False
+
+  vars:
+    STATE_RES_NAME: "${STATE_RES_NAME}"
+    VPC_ID: "${VPC_ID}"
+    VPC_SUBNET_CIDR_BLOCK: "${VPC_SUBNET_CIDR_BLOCK}"
+  tasks:
+    - name: Create Public SG group
+      ec2_group:
+        name: publicSG
+        description: Public access Security Group
+        vpc_id: "{{ VPC_ID }}"
+        rules:
+          - proto: tcp
+            from_port: 80
+            to_port: 80
+            cidr_ip: 0.0.0.0/0
+          - proto: tcp
+            from_port: 22
+            to_port: 22
+            cidr_ip: 0.0.0.0/0
+          - proto: tcp
+            from_port: 8080
+            to_port: 8080
+            cidr_ip: 0.0.0.0/0
+          - proto: tcp
+            from_port: 0
+            to_port: 65535
+            cidr_ip: "{{ VPC_SUBNET_CIDR_BLOCK }}"
+      register: publicSG
+
+    - name: run cmd
+      shell: |
+        shipctl post_resource_state "{{ STATE_RES_NAME }}" versionName "build-${BUILD_NUMBER}"
+        shipctl put_resource_state "{{ STATE_RES_NAME }}" VPC_SG_ID "{{ publicSG.group_id }}"

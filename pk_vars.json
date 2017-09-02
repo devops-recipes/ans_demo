@@ -1,0 +1,9 @@
+{
+  "aws_access_key": "${AWS_ACCESS_KEY_ID}",
+  "aws_secret_key": "${AWS_SECRET_ACCESS_KEY}",
+  "REGION": "${AWS_REGION}",
+  "VPC_ID": "${AMI_VPC_ID}",
+  "SUBNET_ID": "${AMI_PUBLIC_SN_ID}",
+  "SECURITY_GROUP_ID": "${AMI_PUBLIC_SG_ID}",
+  "SOURCE_AMI": "${BASE_EC2_AMI}"
+}

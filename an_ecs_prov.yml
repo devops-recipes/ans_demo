@@ -1,0 +1,19 @@
+- hosts: localhost
+  connection: local
+  gather_facts: False
+
+  vars:
+    ECS_CLUSTER_NAME: "${ECS_CLUSTER_NAME}"
+    STATE_RES_NAME: "${STATE_RES_NAME}"
+  tasks:
+    - name: Create ECS Cluster {{ ECS_CLUSTER_NAME }}
+      ecs_cluster:
+        name: "{{ ECS_CLUSTER_NAME }}"
+        state: present
+      register: ecs
+
+    - name: run cmd
+      shell: |
+        shipctl post_resource_state "{{ STATE_RES_NAME }}" versionName "build-${BUILD_NUMBER}"
+        shipctl put_resource_state "{{ STATE_RES_NAME }}" CLUSTER_ARN "{{ ecs.cluster.clusterArn }}"
+        shipctl put_resource_state "{{ STATE_RES_NAME }}" ECS_CLUSTER_NAME "{{ ECS_CLUSTER_NAME }}"
