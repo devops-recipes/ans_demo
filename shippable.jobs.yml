@@ -94,7 +94,7 @@ jobs:
   - name: delete_inst_prof
     type: runSh
     steps:
-      - IN: ans_demo
+      - IN: setup_inst_prof
         switch: off
       - IN: aws_region
       - IN: inst_tf_state
