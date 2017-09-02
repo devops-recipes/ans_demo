@@ -18,8 +18,7 @@ jobs:
             export AWS_ACCESS_KEY_ID=$(shipctl get_integration_resource_field aws_creds aws_access_key_id)
             export AWS_SECRET_ACCESS_KEY=$(shipctl get_integration_resource_field aws_creds aws_secret_access_key)
             cd $(shipctl get_resource_state ans_sec_ops)
-            echo $VPC_CIDR_BLOCK
-            echo VPC_NAME
+            shipctl replace an_vpc_subnet_prov.yml
             ansible-playbook -v an_vpc_prov.yml
       - OUT: ami_info
 
