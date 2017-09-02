@@ -17,6 +17,13 @@ resources:
       sourceName: "avinci/ans_demo"
       branch: master
 
+# AMI VPC Creation Config
+  - name: aws_region
+    type: params
+    version:
+      params:
+        AWS_REGION: "us-east-1"
+
 ##---------------------------------------------------------------#
 ##----------------------- AMI VPC Resources --------------------#
 ##---------------------------------------------------------------#
@@ -26,7 +33,6 @@ resources:
     type: params
     version:
       params:
-        AWS_REGION: "us-east-1"
         VPC_NAME: "ami_vpc"
         VPC_CIDR_BLOCK: "200.0.0.0/16"
         VPC_SUBNET_NAME: "ami_vpc_subnet_pub"
@@ -50,17 +56,17 @@ resources:
 ###---------------------------------------------------------------#
 ###----------------------- TF Resources --------------------#
 ###---------------------------------------------------------------#
-## Networking TERRAFORM State
-#  - name: inst_tf_state
-#    type: state
-#
-## OUT INST PROF INFO
-#  - name: inst_prof_name
-#    type: params
-#    version:
-#      params:
-#        SEED: "initial_version"
-#
+# Instance Profile TERRAFORM State
+  - name: inst_tf_state
+    type: state
+
+# OUT Instance Profile Info
+  - name: inst_prof_name
+    type: params
+    version:
+      params:
+        SEED: "initial_version"
+
 ###---------------------------------------------------------------#
 ###----------------------- TEST VPC Resources --------------------#
 ###---------------------------------------------------------------#

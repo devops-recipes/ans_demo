@@ -8,6 +8,7 @@ jobs:
   - name: prov_ami_vpc
     type: runSh
     steps:
+      - IN: aws_region
       - IN: ami_conf
       - IN: aws_creds
         switch: off
@@ -27,6 +28,7 @@ jobs:
   - name: build_ecs_ami
     type: runSh
     steps:
+      - IN: aws_region
       - IN: prov_ami_vpc
       - IN: ami_info
         switch: off
@@ -44,6 +46,7 @@ jobs:
   - name: deprov_ami_vpc
     type: runSh
     steps:
+      - IN: aws_region
       - IN: build_ecs_ami
         switch: off
       - IN: ami_conf
@@ -62,32 +65,31 @@ jobs:
             shipctl replace an_vpc_deprov.yml
             ansible-playbook -v an_vpc_deprov.yml
 
-##---------------------------------------------------------------#
-##------------------------- INST PROF Setup -----------------------#
-##---------------------------------------------------------------#
-#
-## SETUP Instance Profile with TERRAFORM
-#  - name: setup_inst_prof
-#    type: runSh
-#    steps:
-#      - IN: aws_region
-#      - IN: inst_tf_state
-#      - IN: aws_creds
-#        switch: off
-#      - IN: ans_demo
-#        switch: off
-#      - TASK:
-#        - script: . /build/IN/ans_demo/gitRepo/tf_createInstProf.sh create
-#      - OUT: inst_tf_state
-#      - OUT: inst_prof_name
-#    on_success:
-#      - script: echo "SUCCESS"
-#    on_failure:
-#      - script: echo "FAILURE"
-#    always:
-#      - script: . /build/IN/ans_demo/gitRepo/tf_archiveState.sh inst_tf_state
-#
-#
+#---------------------------------------------------------------#
+#------------------------- INST PROF Setup -----------------------#
+#---------------------------------------------------------------#
+
+# SETUP Instance Profile with TERRAFORM
+  - name: setup_inst_prof
+    type: runSh
+    steps:
+      - IN: aws_region
+      - IN: inst_tf_state
+      - IN: aws_creds
+        switch: off
+      - IN: ans_demo
+        switch: off
+      - TASK:
+        - script: . /build/IN/ans_demo/gitRepo/tf_createInstProf.sh create
+      - OUT: inst_tf_state
+      - OUT: inst_prof_name
+    on_success:
+      - script: echo "SUCCESS"
+    on_failure:
+      - script: echo "FAILURE"
+    always:
+      - script: . /build/IN/ans_demo/gitRepo/tf_archiveState.sh inst_tf_state
+
 ##---------------------------------------------------------------#
 ##------------------- BUILD/CI with SHIPPABLE CI ----------------#
 ##---------------------------------------------------------------#
