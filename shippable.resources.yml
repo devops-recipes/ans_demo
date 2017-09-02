@@ -124,6 +124,38 @@ resources:
       sourceName : "test-aws"
       region: "us-east-1"
 
+#---------------------------------------------------------------#
+#------------- Application Release Automation Resources --------#
+#---------------------------------------------------------------#
+# REPO of SIT code
+  - name: sit_repo
+    type: gitRepo
+    integration: "demo_gh"
+    pointer:
+      sourceName: "avinci/demoSIT"
+      branch: master
+
+# SIT env vars for BOX
+  - name: sit_params
+    type: params
+    version:
+      params:
+        API_URL: "54.158.18.50:8080"
+        API_TOKEN: "NA"
+
+# Seed version resource
+  - name: seed_app_ver
+    type: version
+    seed:
+      versionName: "1.0.0"
+
+# Current Prod version
+  - name: prod_app_ver
+    type: params
+    version:
+      params:
+        RELEASE_VER_NUMBER: "1.0.0"
+
 ###---------------------------------------------------------------#
 ###----------------------- PROD VPC Resources --------------------#
 ###---------------------------------------------------------------#
@@ -177,40 +209,6 @@ resources:
 #        INST_COUNT: 3
 #        INST_TAG: "prod_ecs_inst"
 #        INST_TYPE: "t2.micro"
-#
-#
-
-###---------------------------------------------------------------#
-###------------- Application Release Automation Resources --------#
-###---------------------------------------------------------------#
-## REPO of SIT code
-#  - name: sit_repo
-#    type: gitRepo
-#    integration: "demo_gh"
-#    pointer:
-#      sourceName: "avinci/demoSIT"
-#      branch: master
-#
-## SIT env vars for BOX
-#  - name: sit_params
-#    type: params
-#    version:
-#      params:
-#        API_URL: "54.158.18.50:8080"
-#        API_TOKEN: "NA"
-#
-## Seed version resource
-#  - name: seed_app_ver
-#    type: version
-#    seed:
-#      versionName: "1.0.0"
-#
-## Current Prod version
-#  - name: prod_app_ver
-#    type: params
-#    version:
-#      params:
-#        RELEASE_VER_NUMBER: "1.0.0"
 #
 ###---------------------------------------------------------------#
 ###---------------------- CD to PROD Resources -------------------#

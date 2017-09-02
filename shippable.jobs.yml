@@ -153,56 +153,56 @@ jobs:
             ansible-playbook -v an_ecs_prov.yml
       - OUT: test_info
 
-###---------------------------------------------------------------#
-###-------------------- App Release Automation -------------------#
-###---------------------------------------------------------------#
-#
-## DEPLOY to TEST environment
-#  - name: deploy_app_test
-#    type: deploy
-#    steps:
-#      - IN: create_app_man
-#        switch: off
-#      - IN: prov_test_ec2
-#      - IN: test_env_ecs
-#        switch: off
-#      - TASK: managed
-#
-## RUN System Integration Testing
-#  - name: sit
-#    type: runSh
-#    steps:
-#      - IN: sit_repo
-#      - IN: deploy_app_test
-#      - IN: sit_params
-#      - TASK:
-#        - script: IN/sit_repo/gitRepo/test.sh sit_params
-#    on_success:
-#      - script: touch /build/state/success.txt
-#    on_failure:
-#      - script: touch /build/state/failure.txt
-#
-## CREATE a production ready release
-#  - name: release_app
-#    type: release
-#    steps:
-#      - IN: seed_app_ver
-#      - IN: sit
-#      - IN: deploy_app_test
-#        switch: off
-#      - TASK: managed
-#        bump: patch
-#
 ##---------------------------------------------------------------#
-##----------------------- Deprov Test Infra----------------------#
+##-------------------- App Release Automation -------------------#
 ##---------------------------------------------------------------#
+
+# DEPLOY to TEST environment
+  - name: deploy_app_test
+    type: deploy
+    steps:
+      - IN: create_app_man
+        switch: off
+      - IN: prov_test_ecs
+      - IN: test_env_ecs
+        switch: off
+      - TASK: managed
+
+# RUN System Integration Testing
+  - name: sit
+    type: runSh
+    steps:
+      - IN: sit_repo
+      - IN: deploy_app_test
+      - IN: sit_params
+      - TASK:
+        - script: IN/sit_repo/gitRepo/test.sh sit_params
+    on_success:
+      - script: touch /build/state/success.txt
+    on_failure:
+      - script: touch /build/state/failure.txt
+
+# CREATE a production ready release
+  - name: release_app
+    type: release
+    steps:
+      - IN: seed_app_ver
+      - IN: sit
+      - IN: deploy_app_test
+        switch: off
+      - TASK: managed
+        bump: patch
+
+#---------------------------------------------------------------#
+#----------------------- Deprov Test Infra----------------------#
+#---------------------------------------------------------------#
 
 # DEPROV TEST Infra with Ansible
   - name: deprov_test_infra
     type: runSh
     steps:
-#      - IN: release_app
-#        switch: off
+      - IN: release_app
+        switch: off
       - IN: aws_region
       - IN: test_conf
         switch: off
@@ -221,37 +221,6 @@ jobs:
             shipctl replace an_ecs_deprov.yml
             ansible-playbook -v an_ecs_deprov.yml
 
-## DEPROV TEST VPC with Ansible
-#  - name: deprov_test_vpc
-#    type: runSh
-#    steps:
-#      - IN: deprov_test_infra
-#      - IN: aws_region
-#      - IN: test_state_res_name
-#        switch: off
-#      - IN: test_infra_state
-#      - IN: test_vpc_subnet_conf
-#        switch: off
-#      - IN: test_vpc_conf
-#        switch: off
-#      - IN: aws_creds
-#        switch: off
-#      - IN: ans_demo
-#        switch: off
-#      - TASK:
-#        - script: |
-#            export AWS_ACCESS_KEY_ID=$(shipctl get_integration_resource_field aws_creds aws_access_key_id)
-#            export AWS_SECRET_ACCESS_KEY=$(shipctl get_integration_resource_field aws_creds aws_secret_access_key)
-#            cd $(shipctl get_resource_state ans_demo)
-#            pushd $(shipctl get_resource_meta test_infra_state)
-#            export VPC_ID=$(cat version.json | jq -r '.'version.propertyBag.VPC_ID)
-#            export VPC_SUBNET_ID=$(cat version.json | jq -r '.'version.propertyBag.VPC_SUBNET_ID)
-#            export VPC_IGW_ID=$(cat version.json | jq -r '.'version.propertyBag.VPC_IGW_ID)
-#            popd
-#            shipctl replace an_vpc_deprov.yml
-#            ansible-playbook -v an_vpc_deprov.yml
-#      - OUT: test_infra_state
-#
 ##---------------------------------------------------------------#
 ##-------------- Prod Infra Prov Using ANsible  -----------------#
 ##---------------------------------------------------------------#
