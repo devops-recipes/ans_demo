@@ -3,13 +3,13 @@
   gather_facts: False
 
   vars:
+    STATE_RES_NAME: "${STATE_RES_NAME}"
     ECS_CLUSTER_NAME: "${ECS_CLUSTER_NAME}"
     INST_COUNT: "${INST_COUNT}"
     INST_TAG: "${INST_TAG}"
     INST_TYPE: "${INST_TYPE}"
     VPC_SUBNET_ID: "${VPC_SUBNET_ID}"
     INST_PROF_NAME: "${INST_PROF_NAME}"
-    STATE_RES_NAME: test_info
   tasks:
     - name: run cmd
       shell: |
