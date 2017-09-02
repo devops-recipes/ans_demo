@@ -14,7 +14,7 @@ resources:
     type: gitRepo
     integration: "demo_gh"
     pointer:
-      sourceName: "avinci/ans_sec_ops"
+      sourceName: "avinci/ans_demo"
       branch: master
 
 ##---------------------------------------------------------------#
