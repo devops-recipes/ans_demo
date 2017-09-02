@@ -90,6 +90,29 @@ jobs:
     always:
       - script: . /build/IN/ans_demo/gitRepo/tf_archiveState.sh inst_tf_state
 
+# SETUP Instance Profile with TERRAFORM
+  - name: setup_inst_prof
+    type: runSh
+    steps:
+      - IN: ans_demo
+        switch: off
+      - IN: aws_region
+      - IN: inst_tf_state
+      - IN: aws_creds
+        switch: off
+      - IN: ans_demo
+        switch: off
+      - TASK:
+        - script: . /build/IN/ans_demo/gitRepo/tf_createInstProf.sh delete
+      - OUT: inst_tf_state
+    on_success:
+      - script: echo "SUCCESS"
+    on_failure:
+      - script: echo "FAILURE"
+    always:
+      - script: . /build/IN/ans_demo/gitRepo/tf_archiveState.sh inst_tf_state
+
+
 #---------------------------------------------------------------#
 #------------------- BUILD/CI with SHIPPABLE CI ----------------#
 #---------------------------------------------------------------#
