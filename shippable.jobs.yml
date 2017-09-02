@@ -152,6 +152,7 @@ jobs:
             shipctl replace an_ecs_prov.yml
             ansible-playbook -v an_ecs_prov.yml
       - OUT: test_info
+      - OUT: test_env_ecs
 
 ##---------------------------------------------------------------#
 ##-------------------- App Release Automation -------------------#
@@ -264,9 +265,8 @@ jobs:
             cd $(shipctl get_resource_state ans_demo)
             shipctl replace an_ecs_prov.yml
             ansible-playbook -v an_ecs_prov.yml
-      - OUT: prod_infra_state
       - OUT: prod_env_ecs
-
+      - OUT: prod_info
 
 ##---------------------------------------------------------------#
 ##----------------------- CD to Production ----------------------#
