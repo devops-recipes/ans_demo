@@ -90,8 +90,8 @@ jobs:
     always:
       - script: . /build/IN/ans_demo/gitRepo/tf_archiveState.sh inst_tf_state
 
-# SETUP Instance Profile with TERRAFORM
-  - name: setup_inst_prof
+# Delete Instance Profile with TERRAFORM
+  - name: delete_inst_prof
     type: runSh
     steps:
       - IN: ans_demo
