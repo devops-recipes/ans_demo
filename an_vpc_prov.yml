@@ -10,7 +10,7 @@
 
     - name: run cmd
       shell: |
-        shipctl post_resource_state "{{ STATE_RES_NAME }}" versionName "build-${BUILD_NUMBER}"
+        shipctl post_resource_state ami_info versionName "build-${BUILD_NUMBER}"
 
     - name: Create VPC {{ VPC_NAME }}
       ec2_vpc_net:
