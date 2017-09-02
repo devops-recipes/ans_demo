@@ -221,88 +221,82 @@ jobs:
             shipctl replace an_ecs_deprov.yml
             ansible-playbook -v an_ecs_deprov.yml
 
-##---------------------------------------------------------------#
-##-------------- Prod Infra Prov Using ANsible  -----------------#
-##---------------------------------------------------------------#
-#
-## TRIGGER PROD deployment
-#  - name: trig_prod_deploy
-#    type: runSh
-#    steps:
-#      - IN: ans_demo
-#        switch: off
-#      - IN: release_app
-#        switch: off
-#      - OUT: prod_app_ver
-#      - TASK:
-#        - script: IN/ans_demo/gitRepo/setVer.sh release_app prod_app_ver
-#
-## PROV Prod VPC with Ansible
-#  - name: prov_prod_vpc
-#    type: runSh
-#    steps:
-##      - IN: trig_prod_deploy
-#      - IN: aws_region
-#      - IN: prod_state_res_name
-#        switch: off
-#      - IN: aws_creds
-#        switch: off
-#      - IN: ans_demo
-#        switch: off
-#      - IN: prod_vpc_conf
-#      - TASK:
-#        - script: |
-#            export AWS_ACCESS_KEY_ID=$(shipctl get_integration_resource_field aws_creds aws_access_key_id)
-#            export AWS_SECRET_ACCESS_KEY=$(shipctl get_integration_resource_field aws_creds aws_secret_access_key)
-#            cd $(shipctl get_resource_state ans_demo)
-#            shipctl replace an_vpc_prov.yml
-#            ansible-playbook -v an_vpc_prov.yml
-#      - OUT: prod_infra_state
-#
-#
-#
-## PROV Prod ECS Cluster with Ansible
-#  - name: prov_prod_ecs
-#    type: runSh
-#    steps:
-#      - IN: prod_cluster_conf
-#      - IN: aws_region
-#      - IN: prod_state_res_name
-#        switch: off
-#      - IN: prov_prod_vpc
-#      - IN: aws_creds
-#        switch: off
-#      - IN: ans_demo
-#        switch: off
-#      - TASK:
-#        - script: |
-#            sudo pip install boto3
-#            export AWS_ACCESS_KEY_ID=$(shipctl get_integration_resource_field aws_creds aws_access_key_id)
-#            export AWS_SECRET_ACCESS_KEY=$(shipctl get_integration_resource_field aws_creds aws_secret_access_key)
-#            cd $(shipctl get_resource_state ans_demo)
-#            shipctl replace an_ecs_prov.yml
-#            ansible-playbook -v an_ecs_prov.yml
-#      - OUT: prod_infra_state
-#      - OUT: prod_env_ecs
-#
+#---------------------------------------------------------------#
+#-------------- Prod Infra Prov Using ANsible  -----------------#
+#---------------------------------------------------------------#
+
+# PROV Prod VPC with Ansible
+  - name: prov_prod_vpc
+    type: runSh
+    steps:
+      - IN: aws_region
+      - IN: aws_creds
+      - IN: ans_demo
+        switch: off
+      - IN: prod_conf
+      - TASK:
+        - script: |
+            export AWS_ACCESS_KEY_ID=$(shipctl get_integration_resource_field aws_creds aws_access_key_id)
+            export AWS_SECRET_ACCESS_KEY=$(shipctl get_integration_resource_field aws_creds aws_secret_access_key)
+            cd $(shipctl get_resource_state ans_demo)
+            shipctl replace an_vpc_prov.yml
+            ansible-playbook -v an_vpc_prov.yml
+      - OUT: prod_info
+
+# PROV Prod ECS Cluster with Ansible
+  - name: prov_prod_ecs
+    type: runSh
+    steps:
+      - IN: prov_prod_vpc
+      - IN: prod_conf
+      - IN: aws_region
+      - IN: aws_creds
+        switch: off
+      - IN: ans_demo
+        switch: off
+      - IN: inst_prof_name
+        switch: off
+      - TASK:
+        - script: |
+            sudo pip install boto3
+            export AWS_ACCESS_KEY_ID=$(shipctl get_integration_resource_field aws_creds aws_access_key_id)
+            export AWS_SECRET_ACCESS_KEY=$(shipctl get_integration_resource_field aws_creds aws_secret_access_key)
+            cd $(shipctl get_resource_state ans_demo)
+            shipctl replace an_ecs_prov.yml
+            ansible-playbook -v an_ecs_prov.yml
+      - OUT: prod_infra_state
+      - OUT: prod_env_ecs
+
 
 ##---------------------------------------------------------------#
 ##----------------------- CD to Production ----------------------#
 ##---------------------------------------------------------------#
-#
-## DEPLOY app to PROD
-#  - name: deploy_app_prod
-#    type: deploy
-#    steps:
-#      - IN: scale_app_prod
-#      - IN: trig_prod_deploy
-#      - IN: release_app
-#        switch: off
-#      - IN: prod_env_ecs
-#        switch: off
-#      - TASK: managed
-##        deployMethod: replace
-#
+
+# TRIGGER PROD deployment
+  - name: trig_prod_deploy
+    type: runSh
+    steps:
+      - IN: ans_demo
+        switch: off
+      - IN: release_app
+        switch: off
+      - OUT: prod_app_ver
+      - TASK:
+        - script: IN/ans_demo/gitRepo/setVer.sh release_app prod_app_ver
+
+# DEPLOY app to PROD
+  - name: deploy_app_prod
+    type: deploy
+    steps:
+      - IN: scale_app_prod
+      - IN: trig_prod_deploy
+      - IN: release_app
+        switch: off
+      - IN: prod_env_ecs
+        switch: off
+      - TASK: managed
+#        deployMethod: replace
+
 ##---------------------------------------------------------------#
 ##----------------------- Deprov Prod Infra----------------------#
 ##---------------------------------------------------------------#
