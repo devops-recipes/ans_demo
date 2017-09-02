@@ -4,7 +4,7 @@
 # automatically. $REGION, #VPC settings that are used in tfvars file
 
 export ACTION=$1
-export RES_REPO="ans_sec_ops"
+export RES_REPO="ans_demo"
 export RES_AWS_CREDS="aws_creds"
 
 export STATE_RES="inst_tf_state"

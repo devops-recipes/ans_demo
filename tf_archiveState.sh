@@ -2,7 +2,7 @@
 
 export STATE_RES=$1
 
-export RES_REPO="ans_sec_ops"
+export RES_REPO="ans_demo"
 export RES_REPO_STATE=$(shipctl get_resource_state $RES_REPO)
 
 export NEW_TF_STATEFILE="$RES_REPO_STATE/terraform.tfstate"

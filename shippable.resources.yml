@@ -10,7 +10,7 @@ resources:
     integration: "demo_aws_key"
 
 # Security Ops scripts repo
-  - name: ans_sec_ops
+  - name: ans_demo
     type: gitRepo
     integration: "demo_gh"
     pointer:

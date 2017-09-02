@@ -2,8 +2,7 @@
 set -o pipefail
 
 export CURR_JOB="build_ecs_ami"
-export RES_REPO="ans_sec_ops"
-export RES_VPC_AMI="ami_infra_state"
+export RES_REPO="ans_demo"
 export RES_AWS_CREDS="aws_creds"
 export OUT_AMI_SEC_APPRD="ami_sec_approved"
 
@@ -15,12 +14,6 @@ export AWS_SECRET_ACCESS_KEY=$(shipctl get_integration_resource_field $RES_AWS_C
 
 set_context(){
   # now setup the variables based on context
-  pushd $(shipctl get_resource_meta $RES_VPC_AMI)
-  export AMI_VPC_ID=$(cat version.json | jq -r '.'version.propertyBag.VPC_ID)
-  export AMI_PUBLIC_SN_ID=$(cat version.json | jq -r '.'version.propertyBag.VPC_SUBNET_ID)
-  export AMI_PUBLIC_SG_ID=$(cat version.json | jq -r '.'version.propertyBag.VPC_SG_ID)
-  popd
-
   shipctl replace pk_vars.json
 }
 

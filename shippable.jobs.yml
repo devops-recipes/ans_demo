@@ -11,13 +11,13 @@ jobs:
       - IN: ami_conf
       - IN: aws_creds
         switch: off
-      - IN: ans_sec_ops
+      - IN: ans_demo
         switch: off
       - TASK:
         - script: |
             export AWS_ACCESS_KEY_ID=$(shipctl get_integration_resource_field aws_creds aws_access_key_id)
             export AWS_SECRET_ACCESS_KEY=$(shipctl get_integration_resource_field aws_creds aws_secret_access_key)
-            cd $(shipctl get_resource_state ans_sec_ops)
+            cd $(shipctl get_resource_state ans_demo)
             shipctl replace an_vpc_prov.yml
             ansible-playbook -v an_vpc_prov.yml
       - OUT: ami_info
@@ -34,10 +34,10 @@ jobs:
         switch: off
       - IN: aws_creds
         switch: off
-      - IN: ans_sec_ops
+      - IN: ans_demo
         switch: off
       - TASK:
-        - script: . IN/ans_sec_ops/gitRepo/pk_basePack.sh
+        - script: . IN/ans_demo/gitRepo/pk_basePack.sh
       - OUT: ami_sec_approved
 
 # DEPROV AMI with Ansible
@@ -52,13 +52,13 @@ jobs:
         switch: off
       - IN: aws_creds
         switch: off
-      - IN: ans_sec_ops
+      - IN: ans_demo
         switch: off
       - TASK:
         - script: |
             export AWS_ACCESS_KEY_ID=$(shipctl get_integration_resource_field aws_creds aws_access_key_id)
             export AWS_SECRET_ACCESS_KEY=$(shipctl get_integration_resource_field aws_creds aws_secret_access_key)
-            cd $(shipctl get_resource_state ans_sec_ops)
+            cd $(shipctl get_resource_state ans_demo)
             shipctl replace an_vpc_deprov.yml
             ansible-playbook -v an_vpc_deprov.yml
 
@@ -74,10 +74,10 @@ jobs:
 #      - IN: inst_tf_state
 #      - IN: aws_creds
 #        switch: off
-#      - IN: ans_sec_ops
+#      - IN: ans_demo
 #        switch: off
 #      - TASK:
-#        - script: . /build/IN/ans_sec_ops/gitRepo/tf_createInstProf.sh create
+#        - script: . /build/IN/ans_demo/gitRepo/tf_createInstProf.sh create
 #      - OUT: inst_tf_state
 #      - OUT: inst_prof_name
 #    on_success:
@@ -85,7 +85,7 @@ jobs:
 #    on_failure:
 #      - script: echo "FAILURE"
 #    always:
-#      - script: . /build/IN/ans_sec_ops/gitRepo/tf_archiveState.sh inst_tf_state
+#      - script: . /build/IN/ans_demo/gitRepo/tf_archiveState.sh inst_tf_state
 #
 #
 ##---------------------------------------------------------------#
@@ -119,14 +119,14 @@ jobs:
 #        switch: off
 #      - IN: aws_creds
 #        switch: off
-#      - IN: ans_sec_ops
+#      - IN: ans_demo
 #        switch: off
 #      - IN: test_vpc_conf
 #      - TASK:
 #        - script: |
 #            export AWS_ACCESS_KEY_ID=$(shipctl get_integration_resource_field aws_creds aws_access_key_id)
 #            export AWS_SECRET_ACCESS_KEY=$(shipctl get_integration_resource_field aws_creds aws_secret_access_key)
-#            cd $(shipctl get_resource_state ans_sec_ops)
+#            cd $(shipctl get_resource_state ans_demo)
 #            shipctl replace an_vpc_prov.yml
 #            ansible-playbook -v an_vpc_prov.yml
 #      - OUT: test_infra_state
@@ -145,14 +145,14 @@ jobs:
 #      - IN: prov_test_vpc
 #      - IN: aws_creds
 #        switch: off
-#      - IN: ans_sec_ops
+#      - IN: ans_demo
 #        switch: off
 #      - TASK:
 #        - script: |
 #            sudo pip install boto3
 #            export AWS_ACCESS_KEY_ID=$(shipctl get_integration_resource_field aws_creds aws_access_key_id)
 #            export AWS_SECRET_ACCESS_KEY=$(shipctl get_integration_resource_field aws_creds aws_secret_access_key)
-#            cd $(shipctl get_resource_state ans_sec_ops)
+#            cd $(shipctl get_resource_state ans_demo)
 #            shipctl replace an_ecs_prov.yml
 #            ansible-playbook -v an_ecs_prov.yml
 #      - OUT: test_infra_state
@@ -176,13 +176,13 @@ jobs:
 #      - IN: prov_test_vpc_sg_group
 #      - IN: aws_creds
 #        switch: off
-#      - IN: ans_sec_ops
+#      - IN: ans_demo
 #        switch: off
 #      - TASK:
 #        - script: |
 #            export AWS_ACCESS_KEY_ID=$(shipctl get_integration_resource_field aws_creds aws_access_key_id)
 #            export AWS_SECRET_ACCESS_KEY=$(shipctl get_integration_resource_field aws_creds aws_secret_access_key)
-#            cd $(shipctl get_resource_state ans_sec_ops)
+#            cd $(shipctl get_resource_state ans_demo)
 #            pushd $(shipctl get_resource_meta test_infra_state)
 #            export VPC_SUBNET_ID=$(cat version.json | jq -r '.'version.propertyBag.VPC_SUBNET_ID)
 #            popd
@@ -250,14 +250,14 @@ jobs:
 #        switch: off
 #      - IN: aws_creds
 #        switch: off
-#      - IN: ans_sec_ops
+#      - IN: ans_demo
 #        switch: off
 #      - TASK:
 #        - script: |
 #            sudo pip install boto3
 #            export AWS_ACCESS_KEY_ID=$(shipctl get_integration_resource_field aws_creds aws_access_key_id)
 #            export AWS_SECRET_ACCESS_KEY=$(shipctl get_integration_resource_field aws_creds aws_secret_access_key)
-#            cd $(shipctl get_resource_state ans_sec_ops)
+#            cd $(shipctl get_resource_state ans_demo)
 #            pushd $(shipctl get_resource_meta test_infra_state)
 #            export VPC_SUBNET_ID=$(cat version.json | jq -r '.'version.propertyBag.VPC_SUBNET_ID)
 #            popd
@@ -280,13 +280,13 @@ jobs:
 #        switch: off
 #      - IN: aws_creds
 #        switch: off
-#      - IN: ans_sec_ops
+#      - IN: ans_demo
 #        switch: off
 #      - TASK:
 #        - script: |
 #            export AWS_ACCESS_KEY_ID=$(shipctl get_integration_resource_field aws_creds aws_access_key_id)
 #            export AWS_SECRET_ACCESS_KEY=$(shipctl get_integration_resource_field aws_creds aws_secret_access_key)
-#            cd $(shipctl get_resource_state ans_sec_ops)
+#            cd $(shipctl get_resource_state ans_demo)
 #            pushd $(shipctl get_resource_meta test_infra_state)
 #            export VPC_ID=$(cat version.json | jq -r '.'version.propertyBag.VPC_ID)
 #            export VPC_SUBNET_ID=$(cat version.json | jq -r '.'version.propertyBag.VPC_SUBNET_ID)
@@ -304,13 +304,13 @@ jobs:
 #  - name: trig_prod_deploy
 #    type: runSh
 #    steps:
-#      - IN: ans_sec_ops
+#      - IN: ans_demo
 #        switch: off
 #      - IN: release_app
 #        switch: off
 #      - OUT: prod_app_ver
 #      - TASK:
-#        - script: IN/ans_sec_ops/gitRepo/setVer.sh release_app prod_app_ver
+#        - script: IN/ans_demo/gitRepo/setVer.sh release_app prod_app_ver
 #
 ## PROV Prod VPC with Ansible
 #  - name: prov_prod_vpc
@@ -322,14 +322,14 @@ jobs:
 #        switch: off
 #      - IN: aws_creds
 #        switch: off
-#      - IN: ans_sec_ops
+#      - IN: ans_demo
 #        switch: off
 #      - IN: prod_vpc_conf
 #      - TASK:
 #        - script: |
 #            export AWS_ACCESS_KEY_ID=$(shipctl get_integration_resource_field aws_creds aws_access_key_id)
 #            export AWS_SECRET_ACCESS_KEY=$(shipctl get_integration_resource_field aws_creds aws_secret_access_key)
-#            cd $(shipctl get_resource_state ans_sec_ops)
+#            cd $(shipctl get_resource_state ans_demo)
 #            shipctl replace an_vpc_prov.yml
 #            ansible-playbook -v an_vpc_prov.yml
 #      - OUT: prod_infra_state
@@ -347,14 +347,14 @@ jobs:
 #      - IN: prov_prod_vpc
 #      - IN: aws_creds
 #        switch: off
-#      - IN: ans_sec_ops
+#      - IN: ans_demo
 #        switch: off
 #      - TASK:
 #        - script: |
 #            sudo pip install boto3
 #            export AWS_ACCESS_KEY_ID=$(shipctl get_integration_resource_field aws_creds aws_access_key_id)
 #            export AWS_SECRET_ACCESS_KEY=$(shipctl get_integration_resource_field aws_creds aws_secret_access_key)
-#            cd $(shipctl get_resource_state ans_sec_ops)
+#            cd $(shipctl get_resource_state ans_demo)
 #            shipctl replace an_ecs_prov.yml
 #            ansible-playbook -v an_ecs_prov.yml
 #      - OUT: prod_infra_state
@@ -378,13 +378,13 @@ jobs:
 #      - IN: prov_prod_vpc_sg_group
 #      - IN: aws_creds
 #        switch: off
-#      - IN: ans_sec_ops
+#      - IN: ans_demo
 #        switch: off
 #      - TASK:
 #        - script: |
 #            export AWS_ACCESS_KEY_ID=$(shipctl get_integration_resource_field aws_creds aws_access_key_id)
 #            export AWS_SECRET_ACCESS_KEY=$(shipctl get_integration_resource_field aws_creds aws_secret_access_key)
-#            cd $(shipctl get_resource_state ans_sec_ops)
+#            cd $(shipctl get_resource_state ans_demo)
 #            pushd $(shipctl get_resource_meta prod_infra_state)
 #            export VPC_SUBNET_ID=$(cat version.json | jq -r '.'version.propertyBag.VPC_SUBNET_ID)
 #            popd
@@ -428,14 +428,14 @@ jobs:
 #        switch: off
 #      - IN: aws_creds
 #        switch: off
-#      - IN: ans_sec_ops
+#      - IN: ans_demo
 #        switch: off
 #      - TASK:
 #        - script: |
 #            sudo pip install boto3
 #            export AWS_ACCESS_KEY_ID=$(shipctl get_integration_resource_field aws_creds aws_access_key_id)
 #            export AWS_SECRET_ACCESS_KEY=$(shipctl get_integration_resource_field aws_creds aws_secret_access_key)
-#            cd $(shipctl get_resource_state ans_sec_ops)
+#            cd $(shipctl get_resource_state ans_demo)
 #            pushd $(shipctl get_resource_meta prod_infra_state)
 #            export VPC_SUBNET_ID=$(cat version.json | jq -r '.'version.propertyBag.VPC_SUBNET_ID)
 #            popd
@@ -458,13 +458,13 @@ jobs:
 #        switch: off
 #      - IN: aws_creds
 #        switch: off
-#      - IN: ans_sec_ops
+#      - IN: ans_demo
 #        switch: off
 #      - TASK:
 #        - script: |
 #            export AWS_ACCESS_KEY_ID=$(shipctl get_integration_resource_field aws_creds aws_access_key_id)
 #            export AWS_SECRET_ACCESS_KEY=$(shipctl get_integration_resource_field aws_creds aws_secret_access_key)
-#            cd $(shipctl get_resource_state ans_sec_ops)
+#            cd $(shipctl get_resource_state ans_demo)
 #            pushd $(shipctl get_resource_meta prod_infra_state)
 #            export VPC_ID=$(cat version.json | jq -r '.'version.propertyBag.VPC_ID)
 #            export VPC_SUBNET_ID=$(cat version.json | jq -r '.'version.propertyBag.VPC_SUBNET_ID)
