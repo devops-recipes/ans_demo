@@ -4,8 +4,17 @@
 
   vars:
     ECS_CLUSTER_NAME: "${ECS_CLUSTER_NAME}"
-    STATE_RES_NAME: "${STATE_RES_NAME}"
+    INST_COUNT: "${INST_COUNT}"
+    INST_TAG: "${INST_TAG}"
+    INST_TYPE: "${INST_TYPE}"
+    VPC_SUBNET_ID: "${VPC_SUBNET_ID}"
+    INST_PROF_NAME: "${INST_PROF_NAME}"
+    STATE_RES_NAME: test_info
   tasks:
+    - name: run cmd
+      shell: |
+        shipctl post_resource_state "{{ STATE_RES_NAME }}" versionName "build-${BUILD_NUMBER}"
+
     - name: Create ECS Cluster {{ ECS_CLUSTER_NAME }}
       ecs_cluster:
         name: "{{ ECS_CLUSTER_NAME }}"
@@ -14,6 +23,28 @@
 
     - name: run cmd
       shell: |
-        shipctl post_resource_state "{{ STATE_RES_NAME }}" versionName "build-${BUILD_NUMBER}"
         shipctl put_resource_state "{{ STATE_RES_NAME }}" CLUSTER_ARN "{{ ecs.cluster.clusterArn }}"
-        shipctl put_resource_state "{{ STATE_RES_NAME }}" ECS_CLUSTER_NAME "{{ ECS_CLUSTER_NAME }}"
+
+    - name: Provision {{ INST_COUNT }} instances with tag {{ INST_TAG }}
+      ec2:
+         key_name: demo-key
+         group: default
+         vpc_subnet_id: "{{ VPC_SUBNET_ID }}"
+         instance_type: "{{ INST_TYPE }}"
+         image: ami-9eb4b1e5
+         assign_public_ip: yes
+         instance_profile_name: "{{ INST_PROF_NAME }}"
+         wait: true
+         exact_count: "{{ INST_COUNT }}"
+         user_data: "#!/bin/bash \n echo ECS_CLUSTER=${ECS_CLUSTER_NAME} >> /etc/ecs/ecs.config"
+         count_tag:
+            Name: "{{ INST_TAG }}"
+         instance_tags:
+            Name: "{{ INST_TAG }}"
+      register: ec2
+
+    - name: run cmd
+      shell: |
+        shipctl put_resource_state "{{ STATE_RES_NAME }}" "INST_{{ item.ami_launch_index }}_PUBLIC_IP" "{{ item.public_ip }}"
+        shipctl put_resource_state "{{ STATE_RES_NAME }}" "INST_{{ item.ami_launch_index }}_ID" "{{ item.id }}"
+      with_items: "{{ ec2.instances }}"

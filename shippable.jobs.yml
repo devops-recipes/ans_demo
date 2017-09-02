@@ -130,62 +130,28 @@ jobs:
             ansible-playbook -v an_vpc_prov.yml
       - OUT: test_info
 
-## PROV Test ECS Cluster with Ansible
-#  - name: prov_test_ecs
-#    type: runSh
-#    steps:
-#      - IN: test_cluster_conf
-#      - IN: aws_region
-#      - IN: test_state_res_name
-#        switch: off
-#      - IN: prov_test_vpc
-#      - IN: aws_creds
-#        switch: off
-#      - IN: ans_demo
-#        switch: off
-#      - TASK:
-#        - script: |
-#            sudo pip install boto3
-#            export AWS_ACCESS_KEY_ID=$(shipctl get_integration_resource_field aws_creds aws_access_key_id)
-#            export AWS_SECRET_ACCESS_KEY=$(shipctl get_integration_resource_field aws_creds aws_secret_access_key)
-#            cd $(shipctl get_resource_state ans_demo)
-#            shipctl replace an_ecs_prov.yml
-#            ansible-playbook -v an_ecs_prov.yml
-#      - OUT: test_infra_state
-#      - OUT: test_env_ecs
-#
-## PROV Test EC2 Instances with Ansible
-#  - name: prov_test_ec2
-#    type: runSh
-#    steps:
-#      - IN: test_ec2_conf
-#      - IN: test_cluster_conf
-#        switch: off
-#      - IN: inst_prof_name
-#        switch: off
-#      - IN: aws_region
-#      - IN: test_infra_state
-#      - IN: test_state_res_name
-#        switch: off
-#      - IN: prov_test_ecs
-#        switch: off
-#      - IN: prov_test_vpc_sg_group
-#      - IN: aws_creds
-#        switch: off
-#      - IN: ans_demo
-#        switch: off
-#      - TASK:
-#        - script: |
-#            export AWS_ACCESS_KEY_ID=$(shipctl get_integration_resource_field aws_creds aws_access_key_id)
-#            export AWS_SECRET_ACCESS_KEY=$(shipctl get_integration_resource_field aws_creds aws_secret_access_key)
-#            cd $(shipctl get_resource_state ans_demo)
-#            pushd $(shipctl get_resource_meta test_infra_state)
-#            export VPC_SUBNET_ID=$(cat version.json | jq -r '.'version.propertyBag.VPC_SUBNET_ID)
-#            popd
-#            shipctl replace an_ec2_prov.yml
-#            ansible-playbook -v an_ec2_prov.yml
-#      - OUT: test_infra_state
-#
+# PROV Test ECS Cluster with Ansible
+  - name: prov_test_ecs
+    type: runSh
+    steps:
+      - IN: test_conf
+      - IN: aws_region
+      - IN: aws_creds
+        switch: off
+      - IN: ans_demo
+        switch: off
+      - IN: inst_prof_name
+        switch: off
+      - TASK:
+        - script: |
+            sudo pip install boto3
+            export AWS_ACCESS_KEY_ID=$(shipctl get_integration_resource_field aws_creds aws_access_key_id)
+            export AWS_SECRET_ACCESS_KEY=$(shipctl get_integration_resource_field aws_creds aws_secret_access_key)
+            cd $(shipctl get_resource_state ans_demo)
+            shipctl replace an_ecs_prov.yml
+            ansible-playbook -v an_ecs_prov.yml
+      - OUT: test_info
+
 ###---------------------------------------------------------------#
 ###-------------------- App Release Automation -------------------#
 ###---------------------------------------------------------------#
@@ -356,39 +322,7 @@ jobs:
 #      - OUT: prod_infra_state
 #      - OUT: prod_env_ecs
 #
-## PROV Prod EC2 Instances with Ansible
-#  - name: prov_prod_ec2
-#    type: runSh
-#    steps:
-#      - IN: prod_ec2_conf
-#      - IN: prod_cluster_conf
-#        switch: off
-#      - IN: inst_prof_name
-#        switch: off
-#      - IN: aws_region
-#      - IN: prod_infra_state
-#      - IN: prod_state_res_name
-#        switch: off
-#      - IN: prov_prod_ecs
-#        switch: off
-#      - IN: prov_prod_vpc_sg_group
-#      - IN: aws_creds
-#        switch: off
-#      - IN: ans_demo
-#        switch: off
-#      - TASK:
-#        - script: |
-#            export AWS_ACCESS_KEY_ID=$(shipctl get_integration_resource_field aws_creds aws_access_key_id)
-#            export AWS_SECRET_ACCESS_KEY=$(shipctl get_integration_resource_field aws_creds aws_secret_access_key)
-#            cd $(shipctl get_resource_state ans_demo)
-#            pushd $(shipctl get_resource_meta prod_infra_state)
-#            export VPC_SUBNET_ID=$(cat version.json | jq -r '.'version.propertyBag.VPC_SUBNET_ID)
-#            popd
-#            shipctl replace an_ec2_prov.yml
-#            ansible-playbook -v an_ec2_prov.yml
-#      - OUT: prod_infra_state
-#
-#
+
 ##---------------------------------------------------------------#
 ##----------------------- CD to Production ----------------------#
 ##---------------------------------------------------------------#
