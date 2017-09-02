@@ -326,10 +326,10 @@ jobs:
   - name: deprov_prod_infra
     type: runSh
     steps:
-      - IN: release_app
+      - IN: prov_prod_ecs
         switch: off
       - IN: aws_region
-      - IN: test_conf
+      - IN: prod_conf
         switch: off
       - IN: prod_info
         switch: off
