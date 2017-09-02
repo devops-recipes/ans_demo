@@ -3,7 +3,7 @@
   gather_facts: False
 
   vars:
-    STATE_RES_NAME: "${STATE_RES_NAME}"
+    STATE_RES_NAME: ami_info
     VPC_SUBNET_CIDR_BLOCK: "${VPC_SUBNET_CIDR_BLOCK}"
     VPC_CIDR_BLOCK: "${VPC_CIDR_BLOCK}"
     VPC_NAME: "${VPC_NAME}"
@@ -22,10 +22,6 @@
           - dest: 0.0.0.0/0
             gateway_id: "{{ VPC_IGW_ID }}"
         state: absent
-
-    - name: run cmd
-      shell: |
-        shipctl post_resource_state "{{ STATE_RES_NAME }}" VPC_RT_ID DELETED
 
     - name: Delete Public SG group
       ec2_group:
@@ -51,28 +47,16 @@
             cidr_ip: "{{ VPC_SUBNET_CIDR_BLOCK }}"
         state: absent
 
-    - name: run cmd
-      shell: |
-        shipctl put_resource_state "{{ STATE_RES_NAME }}" VPC_SG_ID DELETED
-
     - name: Delete Subnet for VPC {{ VPC_NAME }}
       ec2_vpc_subnet:
         vpc_id: "{{ VPC_ID }}"
         cidr: "{{ VPC_SUBNET_CIDR_BLOCK }}"
         state: absent
 
-    - name: run cmd
-      shell: |
-        shipctl put_resource_state "{{ STATE_RES_NAME }}" VPC_SUBNET_ID DELETED
-
     - name: Delete internet gateway for VPC {{ VPC_NAME }}
       ec2_vpc_igw:
         vpc_id: "{{ VPC_ID }}"
         state: absent
-
-    - name: run cmd
-      shell: |
-        shipctl put_resource_state "{{ STATE_RES_NAME }}" VPC_IGW_ID DELETED
 
     - name: Delete VPC {{ VPC_NAME }}
       ec2_vpc_net:
@@ -83,7 +67,3 @@
           module: "{{ VPC_NAME }}"
         tenancy: dedicated
       register: vpc
-
-    - name: run cmd
-      shell: |
-        shipctl put_resource_state "{{ STATE_RES_NAME }}" VPC_ID DELETED
