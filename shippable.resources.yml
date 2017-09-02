@@ -40,12 +40,12 @@ resources:
       params:
         SEED: "initial_version"
 
-## Base ECS AMI ID
-#  - name: ami_sec_approved
-#    type: params
-#    version:
-#      params:
-#        SEED: "initial_version"
+# Base ECS AMI ID
+  - name: ami_sec_approved
+    type: params
+    version:
+      params:
+        SEED: "initial_version"
 
 ###---------------------------------------------------------------#
 ###----------------------- TF Resources --------------------#

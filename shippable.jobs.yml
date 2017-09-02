@@ -23,10 +23,29 @@ jobs:
       - OUT: ami_info
 
 
+# CREATE AWS AMI used to deploy ECS VMs with PACKER
+  - name: build_ecs_ami
+    type: runSh
+    steps:
+      - IN: prov_ami_vpc
+      - IN: ami_info
+        switch: off
+      - IN: ami_conf
+        switch: off
+      - IN: aws_creds
+        switch: off
+      - IN: ans_sec_ops
+        switch: off
+      - TASK:
+        - script: . IN/ans_sec_ops/gitRepo/pk_basePack.sh
+      - OUT: ami_sec_approved
+
 # DEPROV AMI with Ansible
   - name: deprov_ami_vpc
     type: runSh
     steps:
+      - IN: build_ecs_ami
+        switch: off
       - IN: ami_conf
         switch: off
       - IN: ami_info
@@ -43,23 +62,6 @@ jobs:
             shipctl replace an_vpc_deprov.yml
             ansible-playbook -v an_vpc_deprov.yml
 
-#
-## CREATE AWS AMI used to deploy ECS VMs with PACKER
-#  - name: build_ecs_ami
-#    type: runSh
-#    steps:
-#      - IN: prov_ami_vpc_sg_group
-#      - IN: aws_region
-#      - IN: ami_create_conf
-#      - IN: ami_infra_state
-#      - IN: aws_creds
-#        switch: off
-#      - IN: ans_sec_ops
-#        switch: off
-#      - TASK:
-#        - script: . IN/ans_sec_ops/gitRepo/pk_basePack.sh
-#      - OUT: ami_sec_approved
-#
 ##---------------------------------------------------------------#
 ##------------------------- INST PROF Setup -----------------------#
 ##---------------------------------------------------------------#
