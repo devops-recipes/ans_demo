@@ -6,6 +6,8 @@
     STATE_RES_NAME: ami_info
     VPC_CIDR_BLOCK: "${VPC_CIDR_BLOCK}"
     VPC_NAME: "${VPC_NAME}"
+    VPC_SUBNET_CIDR_BLOCK: "${VPC_SUBNET_CIDR_BLOCK}"
+    VPC_SUBNET_NAME: "${VPC_SUBNET_NAME}"
   tasks:
 
     - name: run cmd
@@ -22,5 +24,16 @@
 
     - name: run cmd
       shell: |
-        shipctl post_resource_state "{{ STATE_RES_NAME }}" versionName "build-${BUILD_NUMBER}"
         shipctl put_resource_state "{{ STATE_RES_NAME }}" VPC_ID "{{ vpc.vpc.id }}"
+
+    - name: Create Subnet VPC {{ VPC_NAME }}
+      ec2_vpc_subnet:
+        vpc_id: "{{ vpc.vpc.id }}"
+        cidr: "{{ VPC_SUBNET_CIDR_BLOCK }}"
+        resource_tags:
+          Name: "{{ VPC_SUBNET_NAME }}"
+      register: publicSN
+
+    - name: run cmd
+      shell: |
+        shipctl put_resource_state "{{ STATE_RES_NAME }}" VPC_SUBNET_ID "{{ publicSN.subnet.id }}"
