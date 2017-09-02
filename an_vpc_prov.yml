@@ -37,3 +37,13 @@
     - name: run cmd
       shell: |
         shipctl put_resource_state "{{ STATE_RES_NAME }}" VPC_SUBNET_ID "{{ publicSN.subnet.id }}"
+
+    - name: Create IGW
+      ec2_vpc_igw:
+        vpc_id: "{{ vpc.vpc.id  }}"
+      register: igw
+
+    - name: run cmd
+      shell: |
+        shipctl put_resource_state "{{ STATE_RES_NAME }}" VPC_IGW_ID "{{ igw.gateway_id }}"
+

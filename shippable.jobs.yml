@@ -23,30 +23,6 @@ jobs:
       - OUT: ami_info
 
 
-## PROV AMI VPC IGW with Ansible
-#  - name: prov_ami_vpc_igw
-#    type: runSh
-#    steps:
-#      - IN: aws_region
-#      - IN: ami_state_res_name
-#        switch: off
-#      - IN: ami_infra_state
-#      - IN: prov_ami_vpc_subnet
-#      - IN: aws_creds
-#        switch: off
-#      - IN: ans_sec_ops
-#        switch: off
-#      - TASK:
-#        - script: |
-#            export AWS_ACCESS_KEY_ID=$(shipctl get_integration_resource_field aws_creds aws_access_key_id)
-#            export AWS_SECRET_ACCESS_KEY=$(shipctl get_integration_resource_field aws_creds aws_secret_access_key)
-#            cd $(shipctl get_resource_state ans_sec_ops)
-#            pushd $(shipctl get_resource_meta ami_infra_state)
-#            export VPC_ID=$(cat version.json | jq -r '.'version.propertyBag.VPC_ID)
-#            popd
-#            shipctl replace an_vpc_igw_prov.yml
-#            ansible-playbook -v an_vpc_igw_prov.yml
-#      - OUT: ami_infra_state
 #
 ## PROV AMI VPC Public RT with Ansible
 #  - name: prov_ami_vpc_rt
@@ -217,31 +193,7 @@ jobs:
 #      - OUT: test_infra_state
 #
 #
-## PROV Test VPC IGW with Ansible
-#  - name: prov_test_vpc_igw
-#    type: runSh
-#    steps:
-#      - IN: aws_region
-#      - IN: test_state_res_name
-#        switch: off
-#      - IN: test_infra_state
-#      - IN: prov_test_vpc_subnet
-#      - IN: aws_creds
-#        switch: off
-#      - IN: ans_sec_ops
-#        switch: off
-#      - TASK:
-#        - script: |
-#            export AWS_ACCESS_KEY_ID=$(shipctl get_integration_resource_field aws_creds aws_access_key_id)
-#            export AWS_SECRET_ACCESS_KEY=$(shipctl get_integration_resource_field aws_creds aws_secret_access_key)
-#            cd $(shipctl get_resource_state ans_sec_ops)
-#            pushd $(shipctl get_resource_meta test_infra_state)
-#            export VPC_ID=$(cat version.json | jq -r '.'version.propertyBag.VPC_ID)
-#            popd
-#            shipctl replace an_vpc_igw_prov.yml
-#            ansible-playbook -v an_vpc_igw_prov.yml
-#      - OUT: test_infra_state
-#
+
 ## PROV Test VPC Public RT with Ansible
 #  - name: prov_test_vpc_rt
 #    type: runSh
@@ -496,30 +448,6 @@ jobs:
 #      - OUT: prod_infra_state
 #
 
-## PROV Prod VPC IGW with Ansible
-#  - name: prov_prod_vpc_igw
-#    type: runSh
-#    steps:
-#      - IN: aws_region
-#      - IN: prod_state_res_name
-#        switch: off
-#      - IN: prod_infra_state
-#      - IN: prov_prod_vpc_subnet
-#      - IN: aws_creds
-#        switch: off
-#      - IN: ans_sec_ops
-#        switch: off
-#      - TASK:
-#        - script: |
-#            export AWS_ACCESS_KEY_ID=$(shipctl get_integration_resource_field aws_creds aws_access_key_id)
-#            export AWS_SECRET_ACCESS_KEY=$(shipctl get_integration_resource_field aws_creds aws_secret_access_key)
-#            cd $(shipctl get_resource_state ans_sec_ops)
-#            pushd $(shipctl get_resource_meta prod_infra_state)
-#            export VPC_ID=$(cat version.json | jq -r '.'version.propertyBag.VPC_ID)
-#            popd
-#            shipctl replace an_vpc_igw_prov.yml
-#            ansible-playbook -v an_vpc_igw_prov.yml
-#      - OUT: prod_infra_state
 #
 ## PROV Prod VPC Public RT with Ansible
 #  - name: prov_prod_vpc_rt
