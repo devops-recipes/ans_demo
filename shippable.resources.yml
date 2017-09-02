@@ -39,7 +39,7 @@ resources:
         VPC_SUBNET_CIDR_BLOCK: "200.0.0.0/24"
         BASE_EC2_AMI: "ami-841f46ff"
 
-# Base ECS AMI ID
+# Output of AMI Provisioning
   - name: ami_info
     type: params
     version:
@@ -67,61 +67,61 @@ resources:
       params:
         SEED: "initial_version"
 
+
 ###---------------------------------------------------------------#
-###----------------------- TEST VPC Resources --------------------#
+###----------------------- BUILD/CI Resources --------------------#
 ###---------------------------------------------------------------#
-## Test Infra state
-#  - name: test_infra_state
-#    type: state
-#
-## Test State Resource Name
-#  - name: test_state_res_name
-#    type: params
-#    version:
-#      params:
-#        STATE_RES_NAME: "test_infra_state"
-#
-## Test VPC Creation Config
-#  - name: test_vpc_conf
-#    type: params
-#    version:
-#      params:
-#        VPC_NAME: "test_vpc"
-#        VPC_CIDR_BLOCK: "210.0.0.0/16"
-#
-## Test VPC Creation Config
-#  - name: test_vpc_subnet_conf
-#    type: params
-#    version:
-#      params:
-#        VPC_SUBNET_NAME: "test_vpc_subnet_pub"
-#        VPC_SUBNET_CIDR_BLOCK: "210.0.0.0/24"
-#
-## Test Cluster  Name
-#  - name: test_cluster_conf
-#    type: params
-#    version:
-#      params:
-#        ECS_CLUSTER_NAME: "test-aws"
-#
-## Reference to ECS Test Cluster
-#  - name: test_env_ecs
-#    type: cluster
-#    integration: "demo_aws_key"
-#    pointer:
-#      sourceName : "test-aws"
-#      region: "us-east-1"
-#
-## Test Cluster  Name
-#  - name: test_ec2_conf
-#    type: params
-#    version:
-#      params:
-#        INST_COUNT: 2
-#        INST_TAG: "test_ecs_inst"
-#        INST_TYPE: "t2.micro"
-#
-#
+
+# Docker Image packaging sample Node app
+  - name: demo_doc_img
+    type: image
+    integration: "demo_dh"
+    pointer:
+      sourceName: "avinci/ci_push_docker_hub"
+    seed:
+      versionName: "latest"
+
+# Docker Options for packaged
+  - name: doc_img_opts
+    type: dockerOptions
+    version:
+#      memory: 256
+#      cpuShares: 256
+      portMappings:
+        - 80:80
+
+#---------------------------------------------------------------#
+#----------------------- TEST VPC Resources --------------------#
+#---------------------------------------------------------------#
+# Test VPC Creation Config
+  - name: test_conf
+    type: params
+    version:
+      params:
+        VPC_NAME: "test_vpc"
+        VPC_CIDR_BLOCK: "210.0.0.0/16"
+        VPC_SUBNET_NAME: "test_vpc_subnet_pub"
+        VPC_SUBNET_CIDR_BLOCK: "210.0.0.0/24"
+        ECS_CLUSTER_NAME: "test-aws"
+        INST_COUNT: 2
+        INST_TAG: "test_ecs_inst"
+        INST_TYPE: "t2.micro"
+
+# Output of Test Provisioning
+  - name: test_info
+    type: params
+    version:
+      params:
+        SEED: "initial_version"
+
+# Reference to ECS Test Cluster
+  - name: test_env_ecs
+    type: cluster
+    integration: "demo_aws_key"
+    pointer:
+      sourceName : "test-aws"
+      region: "us-east-1"
+
 ###---------------------------------------------------------------#
 ###----------------------- PROD VPC Resources --------------------#
 ###---------------------------------------------------------------#
@@ -177,28 +177,7 @@ resources:
 #        INST_TYPE: "t2.micro"
 #
 #
-###---------------------------------------------------------------#
-###----------------------- BUILD/CI Resources --------------------#
-###---------------------------------------------------------------#
-#
-## Docker Image packaging sample Node app
-#  - name: demo_doc_img
-#    type: image
-#    integration: "demo_dh"
-#    pointer:
-#      sourceName: "avinci/ci_push_docker_hub"
-#    seed:
-#      versionName: "latest"
-#
-## Docker Options for packaged
-#  - name: doc_img_opts
-#    type: dockerOptions
-#    version:
-##      memory: 256
-##      cpuShares: 256
-#      portMappings:
-#        - 80:80
-#
+
 ###---------------------------------------------------------------#
 ###------------- Application Release Automation Resources --------#
 ###---------------------------------------------------------------#

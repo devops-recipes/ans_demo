@@ -90,51 +90,45 @@ jobs:
     always:
       - script: . /build/IN/ans_demo/gitRepo/tf_archiveState.sh inst_tf_state
 
-##---------------------------------------------------------------#
-##------------------- BUILD/CI with SHIPPABLE CI ----------------#
-##---------------------------------------------------------------#
-#
-#### PACKAGE sample Node.js into docker container
-#  - name: ci-push-docker-hub_runCI
-#    type: runCI
-#    steps:
-#      - OUT: demo_doc_img
-#
-## DEFINE app micro service
-#  - name: create_app_man
-#    type: manifest
-#    steps:
-#      - IN: demo_doc_img
-#      - IN: doc_img_opts
-#
-##---------------------------------------------------------------#
-##-------------- TEST Infra Prov Using ANsible  -----------------#
-##---------------------------------------------------------------#
-#
-## PROV Test VPC with Ansible
-#  - name: prov_test_vpc
-#    type: runSh
-#    steps:
-#      - IN: create_app_man
-#      - IN: aws_region
-#      - IN: test_state_res_name
-#        switch: off
-#      - IN: aws_creds
-#        switch: off
-#      - IN: ans_demo
-#        switch: off
-#      - IN: test_vpc_conf
-#      - TASK:
-#        - script: |
-#            export AWS_ACCESS_KEY_ID=$(shipctl get_integration_resource_field aws_creds aws_access_key_id)
-#            export AWS_SECRET_ACCESS_KEY=$(shipctl get_integration_resource_field aws_creds aws_secret_access_key)
-#            cd $(shipctl get_resource_state ans_demo)
-#            shipctl replace an_vpc_prov.yml
-#            ansible-playbook -v an_vpc_prov.yml
-#      - OUT: test_infra_state
-#
-#
+#---------------------------------------------------------------#
+#------------------- BUILD/CI with SHIPPABLE CI ----------------#
+#---------------------------------------------------------------#
 
+### PACKAGE sample Node.js into docker container
+  - name: ci-push-docker-hub_runCI
+    type: runCI
+    steps:
+      - OUT: demo_doc_img
+
+# DEFINE app micro service
+  - name: create_app_man
+    type: manifest
+    steps:
+      - IN: demo_doc_img
+      - IN: doc_img_opts
+
+#---------------------------------------------------------------#
+#-------------- TEST Infra Prov Using ANsible  -----------------#
+#---------------------------------------------------------------#
+
+# PROV Test VPC with Ansible
+  - name: prov_test_vpc
+    type: runSh
+    steps:
+      - IN: create_app_man
+      - IN: aws_region
+      - IN: aws_creds
+      - IN: ans_demo
+        switch: off
+      - IN: test_conf
+      - TASK:
+        - script: |
+            export AWS_ACCESS_KEY_ID=$(shipctl get_integration_resource_field aws_creds aws_access_key_id)
+            export AWS_SECRET_ACCESS_KEY=$(shipctl get_integration_resource_field aws_creds aws_secret_access_key)
+            cd $(shipctl get_resource_state ans_demo)
+            shipctl replace an_vpc_prov.yml
+            ansible-playbook -v an_vpc_prov.yml
+      - OUT: test_info
 
 ## PROV Test ECS Cluster with Ansible
 #  - name: prov_test_ecs
