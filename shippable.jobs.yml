@@ -19,7 +19,7 @@ jobs:
             export AWS_SECRET_ACCESS_KEY=$(shipctl get_integration_resource_field aws_creds aws_secret_access_key)
             cd $(shipctl get_resource_state ans_sec_ops)
             ansible-playbook -v an_vpc_prov.yml
-      -OUT: ami_info
+      - OUT: ami_info
 
 ## PROV AMI VPC Subnet with Ansible
 #  - name: prov_ami_vpc_subnet
