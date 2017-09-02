@@ -63,7 +63,8 @@ jobs:
             export AWS_SECRET_ACCESS_KEY=$(shipctl get_integration_resource_field aws_creds aws_secret_access_key)
             cd $(shipctl get_resource_state ans_demo)
             shipctl replace an_vpc_deprov.yml
-            ansible-playbook -v an_vpc_deprov.yml
+            cat an_vpc_deprov.yml
+#            ansible-playbook -v an_vpc_deprov.yml
 
 #---------------------------------------------------------------#
 #------------------------- INST PROF Setup -----------------------#
