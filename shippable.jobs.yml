@@ -222,6 +222,28 @@ jobs:
             shipctl replace an_ecs_deprov.yml
             ansible-playbook -v an_ecs_deprov.yml
 
+# DEPROV TEST VPC with Ansible
+  - name: deprov_test_vpc
+    type: runSh
+    steps:
+      - IN: aws_region
+      - IN: deprov_test_infra
+      - IN: test_conf
+        switch: off
+      - IN: test_info
+        switch: off
+      - IN: aws_creds
+        switch: off
+      - IN: ans_demo
+        switch: off
+      - TASK:
+        - script: |
+            export AWS_ACCESS_KEY_ID=$(shipctl get_integration_resource_field aws_creds aws_access_key_id)
+            export AWS_SECRET_ACCESS_KEY=$(shipctl get_integration_resource_field aws_creds aws_secret_access_key)
+            cd $(shipctl get_resource_state ans_demo)
+            shipctl replace an_vpc_deprov.yml
+            ansible-playbook -v an_vpc_deprov.yml
+
 #---------------------------------------------------------------#
 #-------------- Prod Infra Prov Using ANsible  -----------------#
 #---------------------------------------------------------------#
@@ -297,66 +319,51 @@ jobs:
       - TASK: managed
 #        deployMethod: replace
 
-##---------------------------------------------------------------#
-##----------------------- Deprov Prod Infra----------------------#
-##---------------------------------------------------------------#
-#
-## DEPROV PROD Infra with Ansible
-#  - name: deprov_prod_infra
-#    type: runSh
-#    steps:
-#      - IN: aws_region
-#      - IN: prod_state_res_name
-#        switch: off
-#      - IN: prod_infra_state
-#      - IN: prod_ec2_conf
-#        switch: off
-#      - IN: prod_cluster_conf
-#        switch: off
-#      - IN: aws_creds
-#        switch: off
-#      - IN: ans_demo
-#        switch: off
-#      - TASK:
-#        - script: |
-#            sudo pip install boto3
-#            export AWS_ACCESS_KEY_ID=$(shipctl get_integration_resource_field aws_creds aws_access_key_id)
-#            export AWS_SECRET_ACCESS_KEY=$(shipctl get_integration_resource_field aws_creds aws_secret_access_key)
-#            cd $(shipctl get_resource_state ans_demo)
-#            pushd $(shipctl get_resource_meta prod_infra_state)
-#            export VPC_SUBNET_ID=$(cat version.json | jq -r '.'version.propertyBag.VPC_SUBNET_ID)
-#            popd
-#            shipctl replace an_ecs_deprov.yml
-#            ansible-playbook -v an_ecs_deprov.yml
-#      - OUT: prod_infra_state
-#
-## DEPROV POD VPC with Ansible
-#  - name: deprov_prod_vpc
-#    type: runSh
-#    steps:
-#      - IN: deprov_prod_infra
-#      - IN: aws_region
-#      - IN: prod_state_res_name
-#        switch: off
-#      - IN: prod_infra_state
-#      - IN: prod_vpc_subnet_conf
-#        switch: off
-#      - IN: prod_vpc_conf
-#        switch: off
-#      - IN: aws_creds
-#        switch: off
-#      - IN: ans_demo
-#        switch: off
-#      - TASK:
-#        - script: |
-#            export AWS_ACCESS_KEY_ID=$(shipctl get_integration_resource_field aws_creds aws_access_key_id)
-#            export AWS_SECRET_ACCESS_KEY=$(shipctl get_integration_resource_field aws_creds aws_secret_access_key)
-#            cd $(shipctl get_resource_state ans_demo)
-#            pushd $(shipctl get_resource_meta prod_infra_state)
-#            export VPC_ID=$(cat version.json | jq -r '.'version.propertyBag.VPC_ID)
-#            export VPC_SUBNET_ID=$(cat version.json | jq -r '.'version.propertyBag.VPC_SUBNET_ID)
-#            export VPC_IGW_ID=$(cat version.json | jq -r '.'version.propertyBag.VPC_IGW_ID)
-#            popd
-#            shipctl replace an_vpc_deprov.yml
-#            ansible-playbook -v an_vpc_deprov.yml
-#      - OUT: prod_infra_state
+#---------------------------------------------------------------#
+#----------------------- Deprov Prod Infra----------------------#
+#---------------------------------------------------------------#
+# DEPROV PROD Infra with Ansible
+  - name: deprov_prod_infra
+    type: runSh
+    steps:
+      - IN: release_app
+        switch: off
+      - IN: aws_region
+      - IN: test_conf
+        switch: off
+      - IN: prod_info
+        switch: off
+      - IN: aws_creds
+        switch: off
+      - IN: ans_demo
+        switch: off
+      - TASK:
+        - script: |
+            sudo pip install boto3
+            export AWS_ACCESS_KEY_ID=$(shipctl get_integration_resource_field aws_creds aws_access_key_id)
+            export AWS_SECRET_ACCESS_KEY=$(shipctl get_integration_resource_field aws_creds aws_secret_access_key)
+            cd $(shipctl get_resource_state ans_demo)
+            shipctl replace an_ecs_deprov.yml
+            ansible-playbook -v an_ecs_deprov.yml
+
+# DEPROV PROD VPC with Ansible
+  - name: deprov_prod_vpc
+    type: runSh
+    steps:
+      - IN: aws_region
+      - IN: deprov_prod_infra
+      - IN: prod_conf
+        switch: off
+      - IN: prod_info
+        switch: off
+      - IN: aws_creds
+        switch: off
+      - IN: ans_demo
+        switch: off
+      - TASK:
+        - script: |
+            export AWS_ACCESS_KEY_ID=$(shipctl get_integration_resource_field aws_creds aws_access_key_id)
+            export AWS_SECRET_ACCESS_KEY=$(shipctl get_integration_resource_field aws_creds aws_secret_access_key)
+            cd $(shipctl get_resource_state ans_demo)
+            shipctl replace an_vpc_deprov.yml
+            ansible-playbook -v an_vpc_deprov.yml
