@@ -244,6 +244,24 @@ jobs:
             shipctl replace an_vpc_deprov.yml
             ansible-playbook -v an_vpc_deprov.yml
 
+
+
+##---------------------------------------------------------------#
+##----------------------- CD to Production ----------------------#
+##---------------------------------------------------------------#
+
+# TRIGGER PROD deployment
+  - name: trig_prod_deploy
+    type: runSh
+    steps:
+      - IN: ans_demo
+        switch: off
+      - IN: release_app
+        switch: off
+      - OUT: prod_app_ver
+      - TASK:
+        - script: IN/ans_demo/gitRepo/setVer.sh release_app prod_app_ver
+
 #---------------------------------------------------------------#
 #-------------- Prod Infra Prov Using ANsible  -----------------#
 #---------------------------------------------------------------#
@@ -252,6 +270,7 @@ jobs:
   - name: prov_prod_vpc
     type: runSh
     steps:
+      - IN: trig_prod_deploy
       - IN: aws_region
       - IN: aws_creds
       - IN: ans_demo
@@ -290,28 +309,12 @@ jobs:
       - OUT: prod_env_ecs
       - OUT: prod_info
 
-##---------------------------------------------------------------#
-##----------------------- CD to Production ----------------------#
-##---------------------------------------------------------------#
-
-# TRIGGER PROD deployment
-  - name: trig_prod_deploy
-    type: runSh
-    steps:
-      - IN: ans_demo
-        switch: off
-      - IN: release_app
-        switch: off
-      - OUT: prod_app_ver
-      - TASK:
-        - script: IN/ans_demo/gitRepo/setVer.sh release_app prod_app_ver
-
 # DEPLOY app to PROD
   - name: deploy_app_prod
     type: deploy
     steps:
+      - IN: prov_prod_ecs
       - IN: scale_app_prod
-      - IN: trig_prod_deploy
       - IN: release_app
         switch: off
       - IN: prod_env_ecs
@@ -326,7 +329,7 @@ jobs:
   - name: deprov_prod_infra
     type: runSh
     steps:
-      - IN: prov_prod_ecs
+      - IN: deploy_app_prod
         switch: off
       - IN: aws_region
       - IN: prod_conf
