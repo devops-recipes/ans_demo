@@ -13,7 +13,7 @@
   tasks:
     - name: Terminate {{ INST_COUNT }} instances with tag {{ INST_TAG }}
       ec2:
-         key_name: demo-key
+         key_name: dr-pem
          group: default
          vpc_subnet_id: "{{ VPC_SUBNET_ID }}"
          instance_type: "{{ INST_TYPE }}"
