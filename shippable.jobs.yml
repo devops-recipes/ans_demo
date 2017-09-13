@@ -119,7 +119,7 @@ jobs:
 
  # PACKAGE sample Node.js into docker container
 
-  - name: ci-push-docker-hub_runCI
+  - name: push-docker-hub_runCI
     type: runCI
     steps:
       - OUT: demo_doc_img
