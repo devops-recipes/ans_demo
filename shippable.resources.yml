@@ -7,14 +7,14 @@ resources:
 # AWS credentials
   - name: aws_creds
     type: integration
-    integration: "demo_aws_key"
+    integration: "dr-aws"
 
 # Security Ops scripts repo
   - name: ans_demo
     type: gitRepo
-    integration: "demo_gh"
+    integration: "dr-github"
     pointer:
-      sourceName: "avinci/ans_demo"
+      sourceName: "devops-recipes/ans_demo"
       branch: master
 
 # AMI VPC Creation Config
@@ -76,7 +76,7 @@ resources:
 # Docker Image packaging sample Node app
   - name: demo_doc_img
     type: image
-    integration: "demo_dh"
+    integration: "dr-dockerhub"
     pointer:
       sourceName: "avinci/ci_push_docker_hub"
     seed:
@@ -119,7 +119,7 @@ resources:
 # Reference to ECS Test Cluster
   - name: test_env_ecs
     type: cluster
-    integration: "demo_aws_key"
+    integration: "dr-aws"
     pointer:
       sourceName : "test-aws"
       region: "us-east-1"
@@ -130,7 +130,7 @@ resources:
 # REPO of SIT code
   - name: sit_repo
     type: gitRepo
-    integration: "demo_gh"
+    integration: "dr-github"
     pointer:
       sourceName: "avinci/demoSIT"
       branch: master
@@ -160,41 +160,41 @@ resources:
 #----------------------- PROD VPC Resources --------------------#
 #---------------------------------------------------------------#
 
-# Prod Creation Config
-  - name: prod_conf
-    type: params
-    version:
-      params:
-        STATE_RES_NAME: "prod_info"
-        VPC_NAME: "prod_vpc"
-        VPC_CIDR_BLOCK: "100.0.0.0/16"
-        VPC_SUBNET_NAME: "prod_vpc_subnet_pub"
-        VPC_SUBNET_CIDR_BLOCK: "100.0.0.0/24"
-        ECS_CLUSTER_NAME: "prod-aws"
-        INST_COUNT: 3
-        INST_TAG: "prod_ecs_inst"
-        INST_TYPE: "t2.micro"
-
-# Output of Prod Provisioning
-  - name: prod_info
-    type: params
-    version:
-      params:
-        SEED: "initial_version"
-
-# Reference to ECS Prod Cluster
-  - name: prod_env_ecs
-    type: cluster
-    integration: "demo_aws_key"
-    pointer:
-      sourceName : "prod-aws"
-      region: "us-east-1"
-
-#---------------------------------------------------------------#
-#---------------------- CD to PROD Resources -------------------#
-#---------------------------------------------------------------#
-# Number of packaged WARs to deploy to Prod
-  - name: scale_app_prod
-    type: replicas
-    version:
-      count: 1
+# # Prod Creation Config
+#   - name: prod_conf
+#     type: params
+#     version:
+#       params:
+#         STATE_RES_NAME: "prod_info"
+#         VPC_NAME: "prod_vpc"
+#         VPC_CIDR_BLOCK: "100.0.0.0/16"
+#         VPC_SUBNET_NAME: "prod_vpc_subnet_pub"
+#         VPC_SUBNET_CIDR_BLOCK: "100.0.0.0/24"
+#         ECS_CLUSTER_NAME: "prod-aws"
+#         INST_COUNT: 3
+#         INST_TAG: "prod_ecs_inst"
+#         INST_TYPE: "t2.micro"
+#
+# # Output of Prod Provisioning
+#   - name: prod_info
+#     type: params
+#     version:
+#       params:
+#         SEED: "initial_version"
+#
+# # Reference to ECS Prod Cluster
+#   - name: prod_env_ecs
+#     type: cluster
+#     integration: "demo_aws_key"
+#     pointer:
+#       sourceName : "prod-aws"
+#       region: "us-east-1"
+#
+# #---------------------------------------------------------------#
+# #---------------------- CD to PROD Resources -------------------#
+# #---------------------------------------------------------------#
+# # Number of packaged WARs to deploy to Prod
+#   - name: scale_app_prod
+#     type: replicas
+#     version:
+#       count: 1
