@@ -78,7 +78,7 @@ resources:
     type: image
     integration: "dr-dockerhub"
     pointer:
-      sourceName: "devopsrecipes/ci-push-docker-hub/"
+      sourceName: "devopsrecipes/ci-push-docker-hub"
     seed:
       versionName: "master.4"
 
