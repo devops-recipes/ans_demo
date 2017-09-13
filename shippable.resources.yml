@@ -78,7 +78,7 @@ resources:
     type: image
     integration: "dr-dockerhub"
     pointer:
-      sourceName: "avinci/ci_push_docker_hub"
+      sourceName: "devopsrecipes/ci-push-docker-hub/"
     seed:
       versionName: "latest"
 
