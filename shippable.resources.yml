@@ -132,7 +132,7 @@ resources:
     type: gitRepo
     integration: "dr-github"
     pointer:
-      sourceName: "avinci/demoSIT"
+      sourceName: "devops-recipes/demoSIT"
       branch: master
 
 # SIT env vars for BOX
