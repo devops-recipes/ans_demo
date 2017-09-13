@@ -118,10 +118,10 @@ jobs:
 #---------------------------------------------------------------#
 
  ### PACKAGE sample Node.js into docker container
-   - name: ci-push-docker-hub_runCI
-     type: runCI
-     steps:
-       - OUT: demo_doc_img
+ - name: ci-push-docker-hub_runCI
+   type: runCI
+   steps:
+     - OUT: demo_doc_img
 
 # DEFINE app micro service
   - name: create_app_man
