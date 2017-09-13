@@ -80,7 +80,7 @@ resources:
     pointer:
       sourceName: "devopsrecipes/ci-push-docker-hub/"
     seed:
-      versionName: "latest"
+      versionName: "master.4"
 
 # Docker Options for packaged
   - name: doc_img_opts
