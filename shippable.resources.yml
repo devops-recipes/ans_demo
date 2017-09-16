@@ -143,11 +143,11 @@ resources:
         API_URL: "54.158.18.50:8080"
         API_TOKEN: "NA"
 
-# Seed version resource
-  - name: seed_app_ver
-    type: version
-    seed:
-      versionName: "1.0.0"
+# # Seed version resource
+#   - name: seed_app_ver
+#     type: version
+#     seed:
+#       versionName: "1.0.0"
 
 # # Current Prod version
 #   - name: prod_app_ver
