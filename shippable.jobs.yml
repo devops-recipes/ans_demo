@@ -4,66 +4,66 @@ jobs:
 #----------------- AMI Setup Using ANsible  --------------------#
 #---------------------------------------------------------------#
 
-# PROV AMI VPC with Ansible
-  - name: prov_ami_vpc
-    type: runSh
-    steps:
-      - IN: aws_region
-      - IN: ami_conf
-      - IN: aws_creds
-        switch: off
-      - IN: ans_demo
-        switch: off
-      - TASK:
-        - script: |
-            export AWS_ACCESS_KEY_ID=$(shipctl get_integration_resource_field aws_creds aws_access_key_id)
-            export AWS_SECRET_ACCESS_KEY=$(shipctl get_integration_resource_field aws_creds aws_secret_access_key)
-            cd $(shipctl get_resource_state ans_demo)
-            shipctl replace an_vpc_prov.yml
-            ansible-playbook -v an_vpc_prov.yml
-      - OUT: ami_info
-
-
-# CREATE AWS AMI used to deploy ECS VMs with PACKER
-  - name: build_ecs_ami
-    type: runSh
-    steps:
-      - IN: aws_region
-      - IN: prov_ami_vpc
-      - IN: ami_info
-        switch: off
-      - IN: ami_conf
-        switch: off
-      - IN: aws_creds
-        switch: off
-      - IN: ans_demo
-        switch: off
-      - TASK:
-        - script: . IN/ans_demo/gitRepo/pk_basePack.sh
-      - OUT: ami_sec_approved
-
-# DEPROV AMI with Ansible
-  - name: deprov_ami_vpc
-    type: runSh
-    steps:
-      - IN: aws_region
-      - IN: build_ecs_ami
-        switch: off
-      - IN: ami_conf
-        switch: off
-      - IN: ami_info
-        switch: off
-      - IN: aws_creds
-        switch: off
-      - IN: ans_demo
-        switch: off
-      - TASK:
-        - script: |
-            export AWS_ACCESS_KEY_ID=$(shipctl get_integration_resource_field aws_creds aws_access_key_id)
-            export AWS_SECRET_ACCESS_KEY=$(shipctl get_integration_resource_field aws_creds aws_secret_access_key)
-            cd $(shipctl get_resource_state ans_demo)
-            shipctl replace an_vpc_deprov.yml
-            ansible-playbook -v an_vpc_deprov.yml
+# # PROV AMI VPC with Ansible
+#   - name: prov_ami_vpc
+#     type: runSh
+#     steps:
+#       - IN: aws_region
+#       - IN: ami_conf
+#       - IN: aws_creds
+#         switch: off
+#       - IN: ans_demo
+#         switch: off
+#       - TASK:
+#         - script: |
+#             export AWS_ACCESS_KEY_ID=$(shipctl get_integration_resource_field aws_creds aws_access_key_id)
+#             export AWS_SECRET_ACCESS_KEY=$(shipctl get_integration_resource_field aws_creds aws_secret_access_key)
+#             cd $(shipctl get_resource_state ans_demo)
+#             shipctl replace an_vpc_prov.yml
+#             ansible-playbook -v an_vpc_prov.yml
+#       - OUT: ami_info
+#
+#
+# # CREATE AWS AMI used to deploy ECS VMs with PACKER
+#   - name: build_ecs_ami
+#     type: runSh
+#     steps:
+#       - IN: aws_region
+#       - IN: prov_ami_vpc
+#       - IN: ami_info
+#         switch: off
+#       - IN: ami_conf
+#         switch: off
+#       - IN: aws_creds
+#         switch: off
+#       - IN: ans_demo
+#         switch: off
+#       - TASK:
+#         - script: . IN/ans_demo/gitRepo/pk_basePack.sh
+#       - OUT: ami_sec_approved
+#
+# # DEPROV AMI with Ansible
+#   - name: deprov_ami_vpc
+#     type: runSh
+#     steps:
+#       - IN: aws_region
+#       - IN: build_ecs_ami
+#         switch: off
+#       - IN: ami_conf
+#         switch: off
+#       - IN: ami_info
+#         switch: off
+#       - IN: aws_creds
+#         switch: off
+#       - IN: ans_demo
+#         switch: off
+#       - TASK:
+#         - script: |
+#             export AWS_ACCESS_KEY_ID=$(shipctl get_integration_resource_field aws_creds aws_access_key_id)
+#             export AWS_SECRET_ACCESS_KEY=$(shipctl get_integration_resource_field aws_creds aws_secret_access_key)
+#             cd $(shipctl get_resource_state ans_demo)
+#             shipctl replace an_vpc_deprov.yml
+#             ansible-playbook -v an_vpc_deprov.yml
 
 #---------------------------------------------------------------#
 #------------------------- INST PROF Setup -----------------------#

@@ -29,30 +29,30 @@ resources:
 ##---------------------------------------------------------------#
 
 # AMI VPC Creation Config
-  - name: ami_conf
-    type: params
-    version:
-      params:
-        STATE_RES_NAME: "ami_info"
-        VPC_NAME: "ami_vpc"
-        VPC_CIDR_BLOCK: "200.0.0.0/16"
-        VPC_SUBNET_NAME: "ami_vpc_subnet_pub"
-        VPC_SUBNET_CIDR_BLOCK: "200.0.0.0/24"
-        BASE_EC2_AMI: "ami-841f46ff"
-
-# Output of AMI Provisioning
-  - name: ami_info
-    type: params
-    version:
-      params:
-        SEED: "initial_version"
-
-# Base ECS AMI ID
-  - name: ami_sec_approved
-    type: params
-    version:
-      params:
-        SEED: "initial_version"
+#   - name: ami_conf
+#     type: params
+#     version:
+#       params:
+#         STATE_RES_NAME: "ami_info"
+#         VPC_NAME: "ami_vpc"
+#         VPC_CIDR_BLOCK: "200.0.0.0/16"
+#         VPC_SUBNET_NAME: "ami_vpc_subnet_pub"
+#         VPC_SUBNET_CIDR_BLOCK: "200.0.0.0/24"
+#         BASE_EC2_AMI: "ami-841f46ff"
+#
+# # Output of AMI Provisioning
+#   - name: ami_info
+#     type: params
+#     version:
+#       params:
+#         SEED: "initial_version"
+#
+# # Base ECS AMI ID
+#   - name: ami_sec_approved
+#     type: params
+#     version:
+#       params:
+#         SEED: "initial_version"
 
 ###---------------------------------------------------------------#
 ###----------------------- TF Resources --------------------#
